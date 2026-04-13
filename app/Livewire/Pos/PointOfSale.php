@@ -78,15 +78,22 @@ class PointOfSale extends Component
 
     public function calculateTotal()
     {
-        $this->total = collect($this->cart)->sum(function ($item) {
-            return $item['sell_price'] * $item['quantity'];
+        $this->total = (float) collect($this->cart)->sum(function ($item) {
+            return (float) $item['sell_price'] * (int) $item['quantity'];
         });
-        $this->change = $this->totalPaid - $this->total;
+
+        if ($this->paymentMethod !== 'cash') {
+            $this->totalPaid = $this->total;
+        }
+
+        $this->change = (float) $this->totalPaid - (float) $this->total;
     }
 
-    public function updatedTotalPaid()
+    public function updated($propertyName)
     {
-        $this->calculateTotal();
+        if (in_array($propertyName, ['totalPaid', 'paymentMethod'])) {
+            $this->calculateTotal();
+        }
     }
 
     public function checkout(TransactionService $transactionService)

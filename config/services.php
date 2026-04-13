@@ -35,4 +35,8 @@ return [
         'key' => env('GEMINI_API_KEY'),
     ],
 
+    'resend' => [
+        'key' => env('RESEND_API_KEY'),
+    ],
+
 ];

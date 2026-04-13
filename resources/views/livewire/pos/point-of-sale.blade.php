@@ -91,21 +91,23 @@
                         <span class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tighter">Rp {{ number_format($this->total, 0) }}</span>
                     </div>
 
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between border-b dark:border-slate-800 pb-2">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-tight">Method</span>
-                            <select wire:model="paymentMethod" class="text-xs font-bold bg-transparent border-none focus:ring-0 p-0 text-indigo-600 cursor-pointer">
-                                <option value="cash">Cash Payment</option>
-                                <option value="qris">QRIS Digital</option>
-                                <option value="transfer">Bank Transfer</option>
-                            </select>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-                                <span class="text-[8px] font-bold text-slate-400 uppercase block mb-1">Received</span>
-                                <input type="number" wire:model.live="totalPaid" class="w-full text-sm font-bold bg-transparent border-none focus:ring-0 p-0 text-slate-900 dark:text-white" placeholder="0">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between border-b dark:border-slate-800 pb-2">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-tight">Method</span>
+                                <select wire:model.live="paymentMethod" class="text-xs font-bold bg-transparent border-none focus:ring-0 p-0 text-indigo-600 cursor-pointer">
+                                    <option value="cash">Cash Payment</option>
+                                    <option value="qris">QRIS Digital</option>
+                                    <option value="transfer">Bank Transfer</option>
+                                </select>
                             </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
+                                    <span class="text-[8px] font-bold text-slate-400 uppercase block mb-1">Received</span>
+                                    <input type="number" wire:model.live="totalPaid" class="w-full text-sm font-bold bg-transparent border-none focus:ring-0 p-0 text-slate-900 dark:text-white" 
+                                           placeholder="0" 
+                                           {{ $paymentMethod !== 'cash' ? 'readonly' : '' }}>
+                                </div>
                             <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
                                 <span class="text-[8px] font-bold text-slate-400 uppercase block mb-1">Return</span>
                                 <span class="text-sm font-bold {{ $this->change >= 0 ? 'text-green-500' : 'text-rose-500' }}">Rp {{ number_format($this->change, 0) }}</span>

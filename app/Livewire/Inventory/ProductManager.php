@@ -17,6 +17,7 @@ class ProductManager extends Component
     public $name, $sku, $description, $category_id, $supplier_id, $buy_price, $sell_price, $stock, $min_stock, $productId;
     public $image;
     public $isEditing = false;
+    public $showForm = false;
     public $searchTerm = '';
 
     protected $rules = [
@@ -34,8 +35,10 @@ class ProductManager extends Component
     public function render()
     {
         $products = Product::with(['category', 'supplier'])
-            ->where('name', 'like', '%' . $this->searchTerm . '%')
-            ->orWhere('sku', 'like', '%' . $this->searchTerm . '%')
+            ->where(function ($query) {
+                $query->where('name', 'like', '%' . $this->searchTerm . '%')
+                    ->orWhere('sku', 'like', '%' . $this->searchTerm . '%');
+            })
             ->latest()
             ->paginate(10);
 
