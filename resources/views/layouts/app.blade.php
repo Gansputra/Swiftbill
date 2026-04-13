@@ -44,6 +44,9 @@
                     <x-nav-link-sidebar :href="route('products.index')" :active="request()->routeIs('products.index')">
                         Products
                     </x-nav-link-sidebar>
+                    <x-nav-link-sidebar :href="route('stock-movements.index')" :active="request()->routeIs('stock-movements.index')">
+                        Stock Movements
+                    </x-nav-link-sidebar>
                     @endif
                 </nav>
 

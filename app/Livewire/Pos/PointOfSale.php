@@ -12,6 +12,7 @@ class PointOfSale extends Component
     public $cart = [];
     public $total = 0;
     public $totalPaid = 0;
+    public $totalDiscount = 0;
     public $change = 0;
     public $paymentMethod = 'cash';
     public $customerName = 'Guest';
@@ -48,7 +49,8 @@ class PointOfSale extends Component
                 'name' => $product->name,
                 'sell_price' => $product->sell_price,
                 'quantity' => 1,
-                'sku' => $product->sku
+                'sku' => $product->sku,
+                'discount' => 0 // Flat nominal discount
             ];
         }
 
@@ -76,10 +78,23 @@ class PointOfSale extends Component
         $this->calculateTotal();
     }
 
+    public function updateDiscount($productId, $discount)
+    {
+        if (isset($this->cart[$productId])) {
+            $this->cart[$productId]['discount'] = (float) $discount;
+            $this->calculateTotal();
+        }
+    }
+
     public function calculateTotal()
     {
+        $this->totalDiscount = collect($this->cart)->sum(function ($item) {
+            return (float) ($item['discount'] ?? 0);
+        });
+
         $this->total = (float) collect($this->cart)->sum(function ($item) {
-            return (float) $item['sell_price'] * (int) $item['quantity'];
+            $subtotal = ((float) $item['sell_price'] * (int) $item['quantity']) - (float) ($item['discount'] ?? 0);
+            return max(0, $subtotal); // Ensure it doesn't go below 0
         });
 
         if ($this->paymentMethod !== 'cash') {
@@ -110,18 +125,22 @@ class PointOfSale extends Component
 
         $transaction = $transactionService->createTransaction([
             'total_price' => $this->total,
+            'total_discount' => $this->totalDiscount,
             'total_paid' => $this->totalPaid,
             'payment_method' => $this->paymentMethod,
             'customer_name' => $this->customerName
         ], array_values($this->cart));
 
         session()->flash('success', 'Transaction completed successfully.');
+        $invoiceNumber = $transaction->invoice_number;
+        
         $this->cart = [];
         $this->total = 0;
         $this->totalPaid = 0;
         $this->change = 0;
+        $this->totalDiscount = 0;
         $this->customerName = 'Guest';
 
-        $this->redirect(route('pos.index'), navigate: true);
+        $this->redirect(route('pos.receipt', $invoiceNumber), navigate: false);
     }
 }

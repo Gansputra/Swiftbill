@@ -102,6 +102,7 @@ class ProductManager extends Component
         $this->stock = $product->stock;
         $this->min_stock = $product->min_stock;
         $this->isEditing = true;
+        $this->showForm = true;
     }
 
     public function update(ProductService $service)

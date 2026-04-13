@@ -19,6 +19,7 @@ class TransactionService
                 'invoice_number' => $invoiceNumber,
                 'user_id' => auth()->id(),
                 'total_price' => $data['total_price'],
+                'total_discount' => $data['total_discount'] ?? 0,
                 'total_paid' => $data['total_paid'],
                 'total_change' => $data['total_paid'] - $data['total_price'],
                 'payment_method' => $data['payment_method'],
@@ -31,12 +32,26 @@ class TransactionService
                 // Reduce Stock
                 $product->decrement('stock', $item['quantity']);
 
+                // Create Stock Movement History
+                \App\Models\StockMovement::create([
+                    'product_id' => $item['product_id'],
+                    'type' => 'sale',
+                    'quantity' => $item['quantity'],
+                    'reference_id' => $invoiceNumber,
+                    'notes' => 'Sold via POS',
+                    'user_id' => auth()->id()
+                ]);
+
+                $discount = $item['discount'] ?? 0;
+                $subtotal = ($item['quantity'] * $item['sell_price']) - $discount;
+
                 TransactionItem::create([
                     'transaction_id' => $transaction->id,
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['sell_price'],
-                    'subtotal' => $item['quantity'] * $item['sell_price'],
+                    'discount' => $discount,
+                    'subtotal' => max(0, $subtotal),
                 ]);
             }
 

@@ -59,20 +59,26 @@
                     @endif
 
                     @forelse($cart as $id => $item)
-                        <div class="group bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl flex items-center justify-between transition hover:bg-slate-100 dark:hover:bg-slate-800">
-                            <div class="flex-grow min-w-0 pr-4">
-                                <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ $item['name'] }}</h4>
-                                <p class="text-[10px] font-bold text-indigo-500">Rp {{ number_format($item['sell_price'], 0) }}</p>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <div class="flex items-center bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-1">
-                                    <button wire:click="updateQuantity({{ $id }}, {{ $item['quantity'] - 1 }})" class="p-1 hover:text-indigo-600"><svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg></button>
-                                    <span class="text-xs font-bold w-6 text-center text-slate-900 dark:text-white">{{ $item['quantity'] }}</span>
-                                    <button wire:click="updateQuantity({{ $id }}, {{ $item['quantity'] + 1 }})" class="p-1 hover:text-indigo-600"><svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
+                        <div class="group bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl flex flex-col transition hover:bg-slate-100 dark:hover:bg-slate-800 relative space-y-2">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-grow min-w-0 pr-4">
+                                    <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ $item['name'] }}</h4>
+                                    <p class="text-[10px] font-bold text-indigo-500">Rp {{ number_format($item['sell_price'], 0) }}</p>
                                 </div>
-                                <button wire:click="removeFromCart({{ $id }})" class="text-slate-300 hover:text-rose-500 transition">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                </button>
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex items-center bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-1">
+                                        <button wire:click="updateQuantity({{ $id }}, {{ $item['quantity'] - 1 }})" class="p-1 hover:text-indigo-600"><svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg></button>
+                                        <span class="text-xs font-bold w-6 text-center text-slate-900 dark:text-white">{{ $item['quantity'] }}</span>
+                                        <button wire:click="updateQuantity({{ $id }}, {{ $item['quantity'] + 1 }})" class="p-1 hover:text-indigo-600"><svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
+                                    </div>
+                                    <button wire:click="removeFromCart({{ $id }})" class="text-slate-300 hover:text-rose-500 transition">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex items-center text-[10px] font-bold">
+                                <span class="text-slate-400 mr-2 uppercase">Disc Rp:</span>
+                                <input type="number" min="0" wire:change="updateDiscount({{ $id }}, $event.target.value)" value="{{ $item['discount'] ?? 0 }}" class="w-20 h-6 px-1 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded text-center text-rose-500 focus:ring-0 focus:border-indigo-500" placeholder="0">
                             </div>
                         </div>
                     @empty
@@ -86,6 +92,12 @@
                 </div>
 
                 <div class="p-6 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 space-y-6">
+                    @if($this->totalDiscount > 0)
+                    <div class="flex justify-between items-end border-b border-dashed border-slate-200 dark:border-slate-700 pb-2">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Discount</span>
+                        <span class="text-sm font-bold text-rose-500 tracking-tighter">- Rp {{ number_format($this->totalDiscount, 0) }}</span>
+                    </div>
+                    @endif
                     <div class="flex justify-between items-end">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Grand Total</span>
                         <span class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tighter">Rp {{ number_format($this->total, 0) }}</span>
