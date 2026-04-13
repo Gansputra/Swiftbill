@@ -47,6 +47,9 @@
                     <x-nav-link-sidebar :href="route('stock-movements.index')" :active="request()->routeIs('stock-movements.index')">
                         Stock Movements
                     </x-nav-link-sidebar>
+                    <x-nav-link-sidebar :href="route('ai-dashboard')" :active="request()->routeIs('ai-dashboard')">
+                        ⚡ AI Insights
+                    </x-nav-link-sidebar>
                     @endif
                 </nav>
 
