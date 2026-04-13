@@ -6,7 +6,7 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::view('inventory/categories', 'inventory.categories')->name('categories.index');
     Route::view('inventory/suppliers', 'inventory.suppliers')->name('suppliers.index');
