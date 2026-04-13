@@ -50,6 +50,9 @@
                     <x-nav-link-sidebar :href="route('ai-dashboard')" :active="request()->routeIs('ai-dashboard')">
                         ⚡ AI Insights
                     </x-nav-link-sidebar>
+                    <x-nav-link-sidebar :href="route('reports.sales')" :active="request()->routeIs('reports.*')">
+                        📋 Sales Report
+                    </x-nav-link-sidebar>
                     @endif
                 </nav>
 

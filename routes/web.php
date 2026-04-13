@@ -15,6 +15,9 @@ Route::middleware(['auth'])->group(function () {
     Route::view('pos', 'pos.index')->name('pos.index');
     Route::get('pos/receipt/{invoice}', [\App\Http\Controllers\Pos\ReceiptController::class, 'show'])->name('pos.receipt');
     Route::get('ai-dashboard', \App\Livewire\AiDashboard::class)->name('ai-dashboard');
+    Route::get('reports/sales', \App\Livewire\Reports\SalesReport::class)->name('reports.sales');
+    Route::get('reports/export/excel', [\App\Http\Controllers\Reports\ReportExportController::class, 'excel'])->name('reports.export.excel');
+    Route::get('reports/export/pdf', [\App\Http\Controllers\Reports\ReportExportController::class, 'pdf'])->name('reports.export.pdf');
 });
 
 Route::middleware(['auth'])->group(function () {

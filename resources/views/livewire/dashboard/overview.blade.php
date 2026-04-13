@@ -5,10 +5,6 @@
             <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">System Overview</h2>
             <p class="text-sm text-slate-500">Welcome back. Here is what is happening with SwiftBill today.</p>
         </div>
-        <div class="flex space-x-3">
-            <button class="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition">Export Report</button>
-            <button class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-sm hover:bg-indigo-700 transition">Create Sale</button>
-        </div>
     </div>
 
     <!-- Stats Grid -->
