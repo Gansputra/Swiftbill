@@ -17,16 +17,98 @@ class PointOfSale extends Component
     public $paymentMethod = 'cash';
     public $customerName = 'Guest';
 
+    public $hasShiftError = '';
+
+    // Shift properties
+    public $currentShift;
+    public $startingCash = '';
+    public $actualCash = '';
+    public $closingNotes = '';
+    public $isClosingShift = false;
+
+    public function mount()
+    {
+        $this->currentShift = \App\Models\CashShift::where('user_id', auth()->id())
+            ->where('status', 'open')
+            ->first();
+    }
+
+    public function openShift()
+    {
+        if ($this->startingCash === '' || $this->startingCash < 0) {
+            $this->hasShiftError = 'Please enter a valid starting cash amount.';
+            return;
+        }
+
+        $this->currentShift = \App\Models\CashShift::create([
+            'user_id' => auth()->id(),
+            'status' => 'open',
+            'starting_cash' => (float) $this->startingCash,
+        ]);
+        
+        $this->hasShiftError = '';
+    }
+
+    public function calculateExpectedCash()
+    {
+        if (!$this->currentShift) return 0;
+        
+        // Net cash added to drawer = total_price (for cash payments)
+        $cashSales = $this->currentShift->transactions()
+            ->where('payment_method', 'cash')
+            ->sum('total_price');
+
+        return $this->currentShift->starting_cash + $cashSales;
+    }
+
+    public function initiateCloseShift()
+    {
+        $this->isClosingShift = true;
+        $this->actualCash = $this->calculateExpectedCash();
+        $this->closingNotes = '';
+    }
+
+    public function confirmCloseShift()
+    {
+        if ($this->actualCash === '' || $this->actualCash < 0) {
+            $this->hasShiftError = 'Please enter a valid actual cash amount.';
+            return;
+        }
+
+        $this->currentShift->update([
+            'expected_ending_cash' => $this->calculateExpectedCash(),
+            'actual_ending_cash' => (float) $this->actualCash,
+            'notes' => $this->closingNotes,
+            'status' => 'closed',
+            'closed_at' => now(),
+        ]);
+
+        $this->currentShift = null;
+        $this->isClosingShift = false;
+        $this->startingCash = '';
+        $this->cart = [];
+        $this->total = 0;
+        $this->totalPaid = 0;
+        $this->change = 0;
+        
+        session()->flash('success', 'Shift has been successfully closed.');
+        $this->redirect(route('pos.index'), navigate: false);
+    }
+
     public function render()
     {
-        $products = Product::where('stock', '>', 0)
-            ->where(function ($query) {
-                $query->where('name', 'like', '%' . $this->searchTerm . '%')
-                    ->orWhere('sku', 'like', '%' . $this->searchTerm . '%');
-            })
-            ->latest()
-            ->take(8)
-            ->get();
+        $products = collect();
+        
+        if ($this->currentShift) {
+            $products = Product::where('stock', '>', 0)
+                ->where(function ($query) {
+                    $query->where('name', 'like', '%' . $this->searchTerm . '%')
+                        ->orWhere('sku', 'like', '%' . $this->searchTerm . '%');
+                })
+                ->latest()
+                ->take(8)
+                ->get();
+        }
 
         return view('livewire.pos.point-of-sale', [
             'products' => $products
@@ -50,7 +132,7 @@ class PointOfSale extends Component
                 'sell_price' => $product->sell_price,
                 'quantity' => 1,
                 'sku' => $product->sku,
-                'discount' => 0 // Flat nominal discount
+                'discount' => 0
             ];
         }
 
@@ -94,7 +176,7 @@ class PointOfSale extends Component
 
         $this->total = (float) collect($this->cart)->sum(function ($item) {
             $subtotal = ((float) $item['sell_price'] * (int) $item['quantity']) - (float) ($item['discount'] ?? 0);
-            return max(0, $subtotal); // Ensure it doesn't go below 0
+            return max(0, $subtotal);
         });
 
         if ($this->paymentMethod !== 'cash') {
@@ -120,6 +202,11 @@ class PointOfSale extends Component
 
         if ($this->totalPaid < $this->total && $this->paymentMethod === 'cash') {
             session()->flash('error', 'Paid amount must be greater than or equal to total.');
+            return;
+        }
+
+        if (!$this->currentShift) {
+            session()->flash('error', 'No active shift.');
             return;
         }
 

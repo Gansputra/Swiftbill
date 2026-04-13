@@ -1,5 +1,82 @@
-<div class="h-full flex flex-col space-y-6">
-    <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 overflow-hidden">
+<div class="h-full flex flex-col space-y-6 relative">
+
+    @if(!$currentShift)
+        <!-- Open Shift Full Overlay -->
+        <div class="absolute inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-3xl">
+            <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 border-t-4 border-t-indigo-500">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-full mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Open Cash Register</h2>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-2">Start a new shift</p>
+                </div>
+
+                @if($hasShiftError)
+                    <div class="mb-6 p-4 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-bold border border-rose-100 uppercase tracking-wide text-center">
+                        {{ $hasShiftError }}
+                    </div>
+                @endif
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 text-center">Starting Cash in Drawer (Rp)</label>
+                        <input type="number" wire:model="startingCash" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-2xl py-4 px-4 text-center focus:ring-2 focus:ring-indigo-500 font-extrabold text-slate-900 dark:text-white" placeholder="0">
+                    </div>
+                    
+                    <button wire:click="openShift" class="w-full py-4 bg-indigo-600 hover:bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-indigo-100 dark:shadow-none transition-all">
+                        Open Register
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if($isClosingShift)
+        <!-- Close Shift ModalOverlay -->
+        <div class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm rounded-3xl">
+            <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800">
+                <div class="flex justify-between items-center mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Close Register</h2>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">End current shift</p>
+                    </div>
+                    <button wire:click="$set('isClosingShift', false)" class="p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                @if($hasShiftError)
+                    <div class="mb-6 p-4 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-bold border border-rose-100 uppercase tracking-wide text-center">
+                        {{ $hasShiftError }}
+                    </div>
+                @endif
+
+                <div class="space-y-6">
+                    <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 text-center">
+                        <span class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1">Expected Cash in Drawer</span>
+                        <span class="block text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">Rp {{ number_format($this->calculateExpectedCash(), 0) }}</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Actual Cash Counted (Rp)</label>
+                        <input type="number" wire:model="actualCash" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-lg py-3 px-4 focus:ring-2 focus:ring-indigo-500 font-bold">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Closing Notes (Optional)</label>
+                        <textarea wire:model="closingNotes" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs py-3 px-4 focus:ring-2 focus:ring-indigo-500" rows="2" placeholder="Record any cash variance reasons here..."></textarea>
+                    </div>
+                    
+                    <button wire:click="confirmCloseShift" class="w-full py-4 bg-rose-500 hover:bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-rose-100 dark:shadow-none transition-all">
+                        Confirm Close Shift
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 overflow-hidden {{ (!$currentShift || $isClosingShift) ? 'opacity-20 pointer-events-none blur-sm' : '' }} transition-all duration-300">
         
         <!-- Product Catalog (Left) -->
         <div class="lg:col-span-8 flex flex-col space-y-6 overflow-hidden">
@@ -10,8 +87,11 @@
                     </div>
                     <h3 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Catalog</h3>
                 </div>
-                <div class="w-1/2">
+                <div class="flex items-center space-x-4 w-1/2 justify-end">
                     <input type="text" wire:model.live="searchTerm" placeholder="Search products..." class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs py-2 focus:ring-2 focus:ring-indigo-500">
+                    <button wire:click="initiateCloseShift" class="flex-shrink-0 px-4 py-2 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 font-bold text-[10px] uppercase tracking-widest rounded-xl hover:bg-rose-500 hover:text-white transition-colors border border-rose-200 dark:border-rose-800/50 shadow-sm">
+                        Close Shift
+                    </button>
                 </div>
             </div>
 

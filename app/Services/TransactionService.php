@@ -15,9 +15,14 @@ class TransactionService
         return DB::transaction(function () use ($data, $cartItems) {
             $invoiceNumber = 'INV-' . date('Ymd') . '-' . strtoupper(Str::random(5));
             
+            $activeShift = \App\Models\CashShift::where('user_id', auth()->id())
+                ->where('status', 'open')
+                ->first();
+
             $transaction = Transaction::create([
                 'invoice_number' => $invoiceNumber,
                 'user_id' => auth()->id(),
+                'shift_id' => $activeShift ? $activeShift->id : null,
                 'total_price' => $data['total_price'],
                 'total_discount' => $data['total_discount'] ?? 0,
                 'total_paid' => $data['total_paid'],

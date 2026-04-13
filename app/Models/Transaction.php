@@ -17,4 +17,9 @@ class Transaction extends Model
     {
         return $this->hasMany(TransactionItem::class);
     }
+
+    public function shift()
+    {
+        return $this->belongsTo(CashShift::class, 'shift_id');
+    }
 }
