@@ -15,6 +15,33 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Dark Mode Init -->
+        <script>
+            // We use PHP to check the DB value on page load
+            var userPrefersDark = {{ auth()->check() && auth()->user()->dark_mode ? 'true' : 'false' }};
+            if (userPrefersDark || (!{{ auth()->check() ? 'true' : 'false' }} && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        </script>
+
+        <!-- PWA Meta & Script -->
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
+        <meta name="theme-color" content="#4f46e5">
+        <link rel="apple-touch-icon" href="{{ asset('icon-192x192.png') }}">
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    }, function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+                });
+            }
+        </script>
     </head>
     <body class="font-sans antialiased bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200">
         <div class="flex h-screen overflow-hidden">
@@ -47,11 +74,18 @@
                     <x-nav-link-sidebar :href="route('stock-movements.index')" :active="request()->routeIs('stock-movements.index')">
                         Stock Movements
                     </x-nav-link-sidebar>
+                    
+                    <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Analytics</div>
                     <x-nav-link-sidebar :href="route('ai-dashboard')" :active="request()->routeIs('ai-dashboard')">
-                        ⚡ AI Insights
+                        AI Insights
                     </x-nav-link-sidebar>
                     <x-nav-link-sidebar :href="route('reports.sales')" :active="request()->routeIs('reports.*')">
-                        📋 Sales Report
+                        Sales Report
+                    </x-nav-link-sidebar>
+
+                    <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Administration</div>
+                    <x-nav-link-sidebar :href="route('users.index')" :active="request()->routeIs('users.*')">
+                        Employees
                     </x-nav-link-sidebar>
                     @endif
                 </nav>
@@ -84,6 +118,10 @@
                         <div class="hidden sm:block relative">
                             <input type="text" placeholder="Search data..." class="h-9 w-64 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
                         </div>
+                        
+                        <!-- Dark Mode Toggle Component -->
+                        <livewire:theme-toggle />
+
                         <livewire:layout.navigation />
                     </div>
                 </header>

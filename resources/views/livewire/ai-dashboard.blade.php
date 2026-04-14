@@ -1,5 +1,10 @@
-<div class="h-full flex flex-col space-y-6">
-    <div class="flex items-center justify-between">
+<div>
+    <x-slot name="header">
+        AI Insights
+    </x-slot>
+
+    <div class="h-full flex flex-col space-y-6">
+        <div class="flex items-center justify-between">
         <div>
             <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                 <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -89,10 +94,10 @@
 
             <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-3">
                 <div class="flex flex-wrap gap-2">
-                    <button wire:click="$set('userMessage', 'What are my best-selling products?')" class="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition border border-indigo-100 dark:border-indigo-800/30">🏆 Best Sellers</button>
-                    <button wire:click="$set('userMessage', 'Is my stock sufficient for next week?')" class="px-3 py-1.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-amber-100 dark:hover:bg-amber-900/40 transition border border-amber-100 dark:border-amber-800/30">📦 Stock Check</button>
-                    <button wire:click="$set('userMessage', 'How is my daily revenue compared to average?')" class="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition border border-emerald-100 dark:border-emerald-800/30">📊 Revenue</button>
-                    <button wire:click="$set('userMessage', 'Give me 3 tips to improve sales.')" class="px-3 py-1.5 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-rose-100 dark:hover:bg-rose-900/40 transition border border-rose-100 dark:border-rose-800/30">💡 Sales Tips</button>
+                    <button wire:click="$set('userMessage', 'What are my best-selling products?')" class="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition border border-indigo-100 dark:border-indigo-800/30">Best Sellers</button>
+                    <button wire:click="$set('userMessage', 'Is my stock sufficient for next week?')" class="px-3 py-1.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-amber-100 dark:hover:bg-amber-900/40 transition border border-amber-100 dark:border-amber-800/30">Stock Check</button>
+                    <button wire:click="$set('userMessage', 'How is my daily revenue compared to average?')" class="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition border border-emerald-100 dark:border-emerald-800/30">Revenue</button>
+                    <button wire:click="$set('userMessage', 'Give me 3 tips to improve sales.')" class="px-3 py-1.5 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-rose-100 dark:hover:bg-rose-900/40 transition border border-rose-100 dark:border-rose-800/30">Sales Tips</button>
                 </div>
                 <form wire:submit.prevent="sendChatMessage" class="flex items-end gap-3">
                     <div class="flex-grow relative">
@@ -106,9 +111,7 @@
             </div>
         </div>
 
-    </div>
 </div>
-
 <script>
     document.addEventListener('livewire:initialized', () => {
         Livewire.hook('morph.updated', ({ component }) => {
@@ -121,3 +124,4 @@
         });
     });
 </script>
+</div>

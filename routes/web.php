@@ -18,6 +18,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reports/sales', \App\Livewire\Reports\SalesReport::class)->name('reports.sales');
     Route::get('reports/export/excel', [\App\Http\Controllers\Reports\ReportExportController::class, 'excel'])->name('reports.export.excel');
     Route::get('reports/export/pdf', [\App\Http\Controllers\Reports\ReportExportController::class, 'pdf'])->name('reports.export.pdf');
+    Route::get('/users', \App\Livewire\Users\UserManager::class)->name('users.index');
 });
 
 Route::middleware(['auth'])->group(function () {

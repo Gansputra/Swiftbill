@@ -1,5 +1,10 @@
-<div class="space-y-6">
-    <div class="flex items-center justify-between">
+<div>
+    <x-slot name="header">
+        Sales Report
+    </x-slot>
+
+    <div class="space-y-6">
+        <div class="flex items-center justify-between">
         <div>
             <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Sales Report</h2>
             <p class="text-xs text-slate-500 uppercase tracking-widest font-bold mt-1">Revenue & Transaction History</p>
@@ -91,5 +96,7 @@
                 </tbody>
             </table>
         </div>
+        </div>
     </div>
+</div>
 </div>
