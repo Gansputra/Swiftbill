@@ -56,16 +56,29 @@ new #[Layout('layouts.guest')] class extends Component
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-between mt-6">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}" wire:navigate>
-                    {{ __('Forgot your password?') }}
+                <a class="text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition" href="{{ route('password.request') }}" wire:navigate>
+                    {{ __('Forgot password?') }}
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
+            <x-primary-button class="px-8 !rounded-xl shadow-lg shadow-indigo-500/20">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        @if (Route::has('register'))
+            <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                <div class="flex flex-col items-center space-y-3">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">
+                        {{ __("DON'T HAVE AN ACCOUNT?") }}
+                    </p>
+                    <a href="{{ route('register') }}" wire:navigate class="w-full inline-flex justify-center items-center px-4 py-2.5 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 rounded-xl font-bold text-sm text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 hover:shadow-md transition-all duration-200 active:scale-[0.98]">
+                        {{ __('Create New Account') }}
+                    </a>
+                </div>
+            </div>
+        @endif
     </form>
 </div>

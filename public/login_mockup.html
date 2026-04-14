@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Swiftbill</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-darker: #0a0a0a;
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #3b82f6;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --input-bg: #1a1a1a;
+            --input-border: #333333;
+            --glow-color: rgba(139, 92, 246, 0.4);
+            --font-main: 'Outfit', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Left Side: Form Area */
+        .form-section {
+            flex: 1;
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .logo {
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+
+        .logo-text {
+            font-weight: 600;
+            font-size: 1.2rem;
+            letter-spacing: -0.5px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px var(--glow-color);
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+            filter: brightness(1.1);
+        }
+
+        .footer-text {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-text a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer-text a:hover {
+            color: var(--accent-secondary);
+        }
+
+        /* Right Side: Visual Section with Carousel */
+        .visual-section {
+            flex: 1.2;
+            background: var(--bg-darker);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .carousel-view {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 60px;
+        }
+
+        .visual-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        .visual-gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(10, 10, 10, 1) 10%, rgba(10, 10, 10, 0.4) 50%, rgba(10, 10, 10, 0.1) 100%);
+            z-index: 2;
+        }
+
+        .visual-content {
+            position: relative;
+            z-index: 3;
+            max-width: 500px;
+        }
+
+        .visual-title {
+            font-size: 2.22rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: white;
+            letter-spacing: -1px;
+        }
+
+        .visual-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .slider-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 60px;
+            z-index: 10;
+            display: flex;
+            gap: 12px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .dot.active {
+            width: 32px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Shapes animation */
+        .shape {
+            position: absolute;
+            z-index: 0;
+            filter: blur(100px);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .shape-1 { width: 500px; height: 500px; background: rgba(139, 92, 246, 0.1); top: -150px; right: -150px; }
+        .shape-2 { width: 400px; height: 400px; background: rgba(59, 130, 246, 0.08); bottom: -100px; left: -100px; }
+
+        @media (max-width: 1024px) {
+            .visual-section { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side: Form -->
+        <div class="form-section">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            
+            <div class="form-container">
+                <div class="logo">
+                    <div class="logo-icon">S</div>
+                    <span class="logo-text">Swiftbill</span>
+                </div>
+
+                <h1>Create account</h1>
+                <p class="subtitle">Join thousands of customers managing their orders with Swiftbill.</p>
+
+                <form onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" id="email" placeholder="name@company.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Min. 8 characters" required>
+                    </div>
+
+                    <button type="submit" class="signup-btn">Sign up</button>
+                </form>
+
+                <p class="footer-text">
+                    Already have an account? <a href="#">Log in here</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Side: Visual Section with Carousel -->
+        <div class="visual-section">
+            <div class="carousel-view" id="carousel">
+                <!-- Slide 1 -->
+                <div class="carousel-slide">
+                    <img src="./login_visual_side.png" alt="Dashboard Mockup" class="visual-bg-image">
+                    <div class="visual-gradient-overlay"></div>
+                    <div class="visual-content">
+                        <h2 class="visual-title">Check the status</h2>
+                        <p class="visual-subtitle">
+                            It's easy to check status of your online orders. Manage inventory, sales, and analytics in one unified dashboard.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="carousel-slide">
+                    <img src="./login_visual_side_2.png" alt="Mobile Mockup" class="visual-bg-image">
+                    <div class="visual-gradient-overlay"></div>
+                    <div class="visual-content">
+                        <h2 class="visual-title">Manage Everywhere</h2>
+                        <p class="visual-subtitle">
+                            Access your business from any device. Our mobile-first design keeps you in control on the go.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="carousel-slide">
+                    <img src="./login_visual_side_3.png" alt="Analytics" class="visual-bg-image">
+                    <div class="visual-gradient-overlay"></div>
+                    <div class="visual-content">
+                        <h2 class="visual-title">Real-time Insights</h2>
+                        <p class="visual-subtitle">
+                            Make data-driven decisions with real-time reporting and advanced analytics at your fingertips.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-controls">
+                <button class="dot active" onclick="goToSlide(0)"></button>
+                <button class="dot" onclick="goToSlide(1)"></button>
+                <button class="dot" onclick="goToSlide(2)"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const carousel = document.getElementById('carousel');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = 3;
+
+        function updateSlider() {
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlider();
+            resetInterval();
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlider();
+        }
+
+        let slideInterval = setInterval(nextSlide, 5000);
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+    </script>
+</body>
+</html>
