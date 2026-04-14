@@ -19,6 +19,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reports/export/excel', [\App\Http\Controllers\Reports\ReportExportController::class, 'excel'])->name('reports.export.excel');
     Route::get('reports/export/pdf', [\App\Http\Controllers\Reports\ReportExportController::class, 'pdf'])->name('reports.export.pdf');
     Route::get('/users', \App\Livewire\Users\UserManager::class)->name('users.index');
+    Route::get('reports/shift-logs', \App\Livewire\Reports\ShiftLog::class)->name('reports.shifts');
+    Route::get('reports/export/shifts/excel', [\App\Http\Controllers\Reports\ReportExportController::class, 'shiftExcel'])->name('reports.shifts.excel');
+    Route::get('reports/export/shifts/pdf', [\App\Http\Controllers\Reports\ReportExportController::class, 'shiftPdf'])->name('reports.shifts.pdf');
 });
 
 Route::middleware(['auth'])->group(function () {

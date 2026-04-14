@@ -55,6 +55,7 @@ class TransactionService
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['sell_price'],
+                    'cogs' => $product->buy_price,
                     'discount' => $discount,
                     'subtotal' => max(0, $subtotal),
                 ]);

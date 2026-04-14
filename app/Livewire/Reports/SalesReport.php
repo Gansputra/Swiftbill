@@ -12,6 +12,7 @@ class SalesReport extends Component
     public $transactions = [];
     public $totalRevenue = 0;
     public $totalDiscount = 0;
+    public $totalProfit = 0;
     public $totalTransactions = 0;
 
     public function mount()
@@ -28,10 +29,20 @@ class SalesReport extends Component
             ->whereDate('created_at', '<=', $this->dateTo)
             ->latest();
 
-        $this->transactions = $query->get()->toArray();
-        $this->totalRevenue = $query->sum('total_price');
-        $this->totalDiscount = $query->sum('total_discount');
-        $this->totalTransactions = $query->count();
+        $transactions = $query->get();
+        $this->transactions = $transactions->toArray();
+        $this->totalRevenue = $transactions->sum('total_price');
+        $this->totalDiscount = $transactions->sum('total_discount');
+        $this->totalTransactions = $transactions->count();
+
+        // Calculate Total Profit (Revenue - Total COGS)
+        $totalCogs = $transactions->sum(function ($transaction) {
+            return $transaction->items->sum(function ($item) {
+                return $item->quantity * $item->cogs;
+            });
+        });
+
+        $this->totalProfit = $this->totalRevenue - $totalCogs;
     }
 
     public function updated($property)

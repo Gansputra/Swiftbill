@@ -44,7 +44,11 @@
             </div>
             <div class="text-right">
                 <span class="block text-[8px] font-bold text-slate-400 uppercase tracking-widest">Revenue</span>
-                <span class="text-lg font-extrabold text-emerald-600">Rp {{ number_format($totalRevenue, 0) }}</span>
+                <span class="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">Rp {{ number_format($totalRevenue, 0) }}</span>
+            </div>
+            <div class="text-right">
+                <span class="block text-[8px] font-bold text-slate-400 uppercase tracking-widest">Net Profit</span>
+                <span class="text-lg font-extrabold {{ $totalProfit >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">Rp {{ number_format($totalProfit, 0) }}</span>
             </div>
         </div>
     </div>

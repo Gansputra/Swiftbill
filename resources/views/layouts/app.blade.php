@@ -79,8 +79,11 @@
                     <x-nav-link-sidebar :href="route('ai-dashboard')" :active="request()->routeIs('ai-dashboard')">
                         AI Insights
                     </x-nav-link-sidebar>
-                    <x-nav-link-sidebar :href="route('reports.sales')" :active="request()->routeIs('reports.*')">
+                    <x-nav-link-sidebar :href="route('reports.sales')" :active="request()->routeIs('reports.sales')">
                         Sales Report
+                    </x-nav-link-sidebar>
+                    <x-nav-link-sidebar :href="route('reports.shifts')" :active="request()->routeIs('reports.shifts')">
+                        Shift Logs
                     </x-nav-link-sidebar>
 
                     <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Administration</div>

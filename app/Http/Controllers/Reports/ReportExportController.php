@@ -82,4 +82,74 @@ class ReportExportController extends Controller
             'totalDiscount' => $transactions->sum('total_discount'),
         ]);
     }
+
+    /**
+     * Export shift logs as CSV/Excel
+     */
+    public function shiftExcel(Request $request)
+    {
+        $from = $request->query('from', today()->startOfMonth()->format('Y-m-d'));
+        $to = $request->query('to', today()->format('Y-m-d'));
+
+        $shifts = \App\Models\CashShift::with('user')
+            ->whereDate('created_at', '>=', $from)
+            ->whereDate('created_at', '<=', $to)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $filename = "shift_logs_{$from}_to_{$to}.csv";
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function () use ($shifts) {
+            $file = fopen('php://output', 'w');
+
+            fputcsv($file, ['Cashier', 'Shift Opened', 'Shift Closed', 'Starting Cash', 'Expected Cash', 'Actual Cash', 'Variance', 'Status']);
+
+            foreach ($shifts as $shift) {
+                $variance = ($shift->status === 'closed' && $shift->actual_ending_cash !== null)
+                    ? $shift->actual_ending_cash - $shift->expected_ending_cash
+                    : 0;
+
+                fputcsv($file, [
+                    $shift->user->name ?? '-',
+                    $shift->created_at->format('Y-m-d H:i'),
+                    $shift->closed_at ? $shift->closed_at->format('Y-m-d H:i') : '-',
+                    $shift->starting_cash,
+                    $shift->expected_ending_cash ?? '-',
+                    $shift->actual_ending_cash ?? '-',
+                    $variance,
+                    strtoupper($shift->status),
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export shift logs as printable PDF (HTML)
+     */
+    public function shiftPdf(Request $request)
+    {
+        $from = $request->query('from', today()->startOfMonth()->format('Y-m-d'));
+        $to = $request->query('to', today()->format('Y-m-d'));
+
+        $shifts = \App\Models\CashShift::with('user')
+            ->whereDate('created_at', '>=', $from)
+            ->whereDate('created_at', '<=', $to)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('reports.shifts-pdf', [
+            'shifts' => $shifts,
+            'from' => $from,
+            'to' => $to,
+        ]);
+    }
 }
