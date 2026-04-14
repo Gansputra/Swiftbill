@@ -16,17 +16,6 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <!-- Dark Mode Init -->
-        <script>
-            // We use PHP to check the DB value on page load
-            var userPrefersDark = {{ auth()->check() && auth()->user()->dark_mode ? 'true' : 'false' }};
-            if (userPrefersDark || (!{{ auth()->check() ? 'true' : 'false' }} && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        </script>
-
         <!-- PWA Meta & Script -->
         <link rel="manifest" href="{{ asset('manifest.json') }}">
         <meta name="theme-color" content="#4f46e5">
@@ -43,13 +32,13 @@
             }
         </script>
     </head>
-    <body class="font-sans antialiased bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200">
+    <body class="font-sans antialiased bg-slate-50 text-slate-800">
         <div class="flex h-screen overflow-hidden">
             <!-- Sidebar (Desktop) -->
-            <aside class="hidden md:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-sm z-50">
+            <aside class="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 shadow-sm z-50">
                 <div class="p-6 flex items-center space-x-3">
                     <div class="h-8 w-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">S</div>
-                    <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">SwiftBill</span>
+                    <span class="text-xl font-bold tracking-tight text-slate-900">SwiftBill</span>
                 </div>
                 
                 <nav class="flex-grow px-4 pb-4 space-y-1">
@@ -93,9 +82,9 @@
                     @endif
                 </nav>
 
-                <div class="p-4 border-t border-slate-200 dark:border-slate-800">
-                    <div class="flex items-center space-x-3 px-3 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl">
-                        <div class="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-700 dark:text-indigo-300 font-bold uppercase">{{ substr(auth()->user()->name, 0, 1) }}</div>
+                <div class="p-4 border-t border-slate-200">
+                    <div class="flex items-center space-x-3 px-3 py-2 bg-slate-50 rounded-xl">
+                        <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold uppercase">{{ substr(auth()->user()->name, 0, 1) }}</div>
                         <div class="flex-grow min-w-0">
                             <p class="text-sm font-semibold truncate">{{ auth()->user()->name }}</p>
                             <p class="text-[10px] text-slate-400 uppercase font-bold">{{ auth()->user()->role }}</p>
@@ -105,9 +94,9 @@
             </aside>
 
             <!-- Main Content Area -->
-            <div class="flex-grow flex flex-col min-w-0 bg-slate-50 dark:bg-slate-950">
+            <div class="flex-grow flex flex-col min-w-0 bg-slate-50">
                 <!-- Top Navbar -->
-                <header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-40 sticky top-0">
+                <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-40 sticky top-0">
                     <div class="flex items-center space-x-4">
                         <button class="md:hidden p-2 text-slate-500 hover:text-indigo-600">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -119,11 +108,10 @@
                     
                     <div class="flex items-center space-x-4">
                         <div class="hidden sm:block relative">
-                            <input type="text" placeholder="Search data..." class="h-9 w-64 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
+                            <input type="text" placeholder="Search data..." class="h-9 w-64 bg-slate-100 border-none rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
                         </div>
                         
-                        <!-- Dark Mode Toggle Component -->
-                        <livewire:theme-toggle />
+
 
                         <livewire:layout.navigation />
                     </div>
