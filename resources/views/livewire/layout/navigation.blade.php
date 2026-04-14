@@ -16,42 +16,65 @@ new class extends Component
     }
 }; ?>
 
-<div class="flex items-center space-x-4">
-    <x-dropdown align="right" width="48">
+<div class="flex items-center space-x-6">
+    {{-- TOMBOL DARK MODE (Opsional, sudah saya siapkan tempatnya) --}}
+    <button @click="darkMode = !darkMode" class="text-slate-400 hover:text-indigo-500 transition-colors duration-300">
+        <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        <svg x-show="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+    </button>
+
+    <x-dropdown align="right" width="56">
         <x-slot name="trigger">
-            <button class="inline-flex items-center p-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 transition focus:outline-none shadow-sm">
+            <button class="group flex items-center p-1 pr-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-full hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 focus:outline-none">
                 
-                <div class="relative">
-                    {{-- LOGIKA CEK FOTO: Jika ada path di database, pakai asset storage. Jika kosong, pakai UI-Avatars --}}
-                    <img class="h-8 w-8 rounded-full object-cover border border-slate-100 dark:border-slate-700" 
+                {{-- AVATAR DENGAN ANIMASI --}}
+                <div class="relative overflow-hidden rounded-full ring-2 ring-transparent group-hover:ring-indigo-500/30 transition-all duration-300">
+                    <img class="h-9 w-9 rounded-full object-cover transform group-hover:scale-110 transition-transform duration-500" 
                          src="{{ auth()->user()->profile_photo_path ? asset('storage/' . auth()->user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&color=6366f1&background=EEF2FF&bold=true' }}" 
                          alt="{{ auth()->user()->name }}">
                     
-                    <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white dark:ring-slate-900"></span>
+                    <div class="absolute inset-0 bg-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
 
-                <div class="ms-1.5 pr-1 text-slate-400">
-                    <svg class="h-3.5 w-3.5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                {{-- NAMA & STATUS (Hanya muncul di Desktop) --}}
+                <div class="hidden md:flex flex-col items-start ms-3 text-left">
+                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 leading-none group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {{ explode(' ', auth()->user()->name)[0] }}
+                    </span>
+                    <span class="text-[9px] text-slate-400 font-medium tracking-tight mt-0.5">Verified Account</span>
+                </div>
+
+                {{-- INDICATOR ICON --}}
+                <div class="ms-2 text-slate-300 group-hover:text-indigo-500 transition-colors">
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </div>
             </button>
         </x-slot>
 
         <x-slot name="content">
-            <div class="block px-4 py-2 text-xs text-slate-400 border-b border-slate-100 dark:border-slate-800">
-                Logged in as: <span class="font-bold text-slate-700 dark:text-slate-200">{{ auth()->user()->name }}</span>
+            {{-- HEADER DROPDOWN YANG MEWAH --}}
+            <div class="px-4 py-3 bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-700/50">
+                <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Signed in as</p>
+                <p class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">{{ auth()->user()->email }}</p>
             </div>
 
-            <x-dropdown-link :href="route('profile')" wire:navigate>
-                {{ __('Profile') }}
-            </x-dropdown-link>
-
-            <button wire:click="logout" class="w-full text-start">
-                <x-dropdown-link>
-                    {{ __('Log Out') }}
+            <div class="p-1">
+                <x-dropdown-link :href="route('profile')" wire:navigate class="rounded-lg flex items-center px-3 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all">
+                    <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    {{ __('View Profile') }}
                 </x-dropdown-link>
-            </button>
+
+                <div class="my-1 border-t border-slate-100 dark:border-slate-800"></div>
+
+                <button wire:click="logout" class="w-full">
+                    <x-dropdown-link class="rounded-lg flex items-center px-3 py-2 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all">
+                        <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        {{ __('Sign Out') }}
+                    </x-dropdown-link>
+                </button>
+            </div>
         </x-slot>
     </x-dropdown>
 </div>

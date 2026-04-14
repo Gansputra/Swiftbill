@@ -86,15 +86,15 @@ new class extends Component
         <div class="flex items-center gap-6 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
             <div class="relative">
                 @if ($photo)
-                    {{-- Preview Foto yang baru dipilih --}}
-                    <img class="h-20 w-20 rounded-full object-cover border-4 border-white dark:border-slate-900 shadow-sm" src="{{ $photo->temporaryUrl() }}">
+                {{-- Preview Foto yang baru dipilih --}}
+                <img class="h-20 w-20 rounded-full object-cover border-4 border-white dark:border-slate-900 shadow-sm" src="{{ $photo->temporaryUrl() }}">
                 @else
-                    {{-- Foto lama atau inisial --}}
-                    <img class="h-20 w-20 rounded-full object-cover border-4 border-white dark:border-slate-900 shadow-sm" 
-                         src="{{ auth()->user()->profile_photo_path ? asset('storage/'.auth()->user()->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=6366f1&background=EEF2FF&bold=true' }}">
+                {{-- Foto lama atau inisial --}}
+                <img class="h-20 w-20 rounded-full object-cover border-4 border-white dark:border-slate-900 shadow-sm"
+                    src="{{ auth()->user()->profile_photo_path ? asset('storage/'.auth()->user()->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=6366f1&background=EEF2FF&bold=true' }}">
                 @endif
             </div>
-            
+
             <div>
                 <label class="block">
                     <span class="sr-only">Choose profile photo</span>
@@ -104,7 +104,7 @@ new class extends Component
                         file:text-xs file:font-bold
                         file:bg-indigo-50 file:text-indigo-700
                         hover:file:bg-indigo-100
-                    "/>
+                    " />
                 </label>
                 <p class="mt-2 text-[10px] text-slate-400">JPG, PNG, atau GIF (Maks. 1MB)</p>
                 <x-input-error class="mt-2" :messages="$errors->get('photo')" />
