@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    /* 1. Paksa sistem browser tahu kita pakai mode gelap (ngaruh ke scrollbar & form) */
+    html.dark {
+        color-scheme: dark;
+        background-color: #020617; /* Ini warna bg-slate-950 */
+    }
+
+    /* 2. Paksa body supaya gak ada alasan jadi putih saat transisi */
+    .dark body {
+        @apply bg-slate-950 text-slate-200;
+        background-color: #020617 !important;
+    }
+
+    /* 3. Smooth transition biar gak kaget pas pindah mode */
+    body {
+        @apply transition-colors duration-300;
+    }
+}
+
+/* 4. Fix buat Livewire Navigate: Cegah area slot yang putih */
+[x-cloak] { display: none !important; }
