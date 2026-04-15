@@ -82,7 +82,7 @@
     <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[3rem] shadow-sm overflow-hidden text-sm relative">
         <div class="p-8 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between bg-slate-50/30 dark:bg-slate-900/30">
             <h3 class="text-lg font-black text-slate-900 dark:text-white tracking-tighter uppercase">Audit Trail</h3>
-            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest border border-slate-200 dark:border-slate-800 px-3 py-1 rounded-full italic">Sorted by Recency</span>
+            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest border border-slate-200 dark:border-slate-800 px-3 py-1 rounded-full italic">Daily Audit</span>
         </div>
 
         <div class="overflow-x-auto p-4 pb-0">
@@ -99,39 +99,32 @@
                 <tbody class="divide-y divide-slate-50 dark:divide-slate-800/10">
                     @forelse($transactions as $trx)
                         <tr class="group">
-                            <td class="px-8 py-6 rounded-l-3xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20 first:border-l last:border-r">
-                                <a href="{{ route('pos.receipt', $trx['invoice_number'] ?? '#') }}" target="_blank" class="text-xs font-black text-slate-900 dark:text-white hover:text-indigo-600 transition-colors uppercase tracking-widest border-b border-transparent hover:border-indigo-600">
-                                    #{{ $trx['invoice_number'] ?? 'N/A' }}
+                            <td class="px-8 py-6 rounded-l-3xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
+                                <a href="{{ route('pos.receipt', $trx->invoice_number) }}" target="_blank" class="text-xs font-black text-slate-900 dark:text-white hover:text-indigo-600 transition-colors uppercase tracking-widest border-b border-transparent hover:border-indigo-600">
+                                    #{{ $trx->invoice_number }}
                                 </a>
                             </td>
                             <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] font-black text-slate-900 dark:text-white uppercase">{{ isset($trx['created_at']) ? \Carbon\Carbon::parse($trx['created_at'])->format('d M Y') : '-' }}</span>
-                                    <span class="text-[9px] text-slate-400 font-bold mt-0.5 tracking-widest">{{ isset($trx['created_at']) ? \Carbon\Carbon::parse($trx['created_at'])->format('H:i:s') : '-' }}</span>
+                                    <span class="text-[10px] font-black text-slate-900 dark:text-white uppercase">{{ $trx->created_at->format('d M Y') }}</span>
+                                    <span class="text-[9px] text-slate-400 font-bold mt-0.5 tracking-widest">{{ $trx->created_at->format('H:i:s') }}</span>
                                 </div>
                             </td>
-                            <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
-                                <div class="flex items-center gap-2">
-                                     <div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
-                                     <span class="text-[10px] font-black text-slate-700 dark:text-white uppercase">{{ $trx['user']['name'] ?? 'System' }}</span>
-                                </div>
+                            <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20 text-[10px] font-black text-slate-700 dark:text-white uppercase">
+                                {{ $trx->user->name ?? 'System' }}
                             </td>
                             <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
                                 <div class="flex flex-wrap gap-1">
-                                    @isset($trx['items'])
-                                        @foreach($trx['items'] as $item)
-                                            <span class="px-2 py-0.5 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded text-[8px] font-black text-slate-500 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-all">
-                                                {{ $item['product']['name'] ?? 'Item' }} ({{ $item['quantity'] ?? 1 }})
-                                            </span>
-                                        @endforeach
-                                    @endisset
+                                    @foreach($trx->items as $item)
+                                        <span class="px-2 py-0.5 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded text-[8px] font-black text-slate-500">
+                                            {{ $item->product->name ?? 'Item' }} ({{ $item->quantity }})
+                                        </span>
+                                    @endforeach
                                 </div>
                             </td>
-                            <td class="px-8 py-6 rounded-r-3xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all text-right border-y border-slate-50 dark:border-slate-800/20 first:border-l last:border-r">
-                                <p class="text-sm font-black text-slate-900 dark:text-white tracking-tighter">Rp {{ number_format($trx['total_price'] ?? 0, 0, ',', '.') }}</p>
-                                <span class="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1 inline-block border border-slate-100 dark:border-slate-800 px-1.5 py-0.5 rounded leading-none italic">
-                                    {{ $trx['payment_method'] ?? 'cash' }}
-                                </span>
+                            <td class="px-8 py-6 rounded-r-3xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all text-right border-y border-slate-50 dark:border-slate-800/20 text-sm font-black text-slate-900 dark:text-white tracking-tighter">
+                                Rp {{ number_format($trx->total_price, 0, ',', '.') }}
+                                <span class="text-[8px] block font-black text-slate-400 uppercase italic">{{ $trx->payment_method }}</span>
                             </td>
                         </tr>
                     @empty
@@ -144,6 +137,9 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="px-8 py-4 border-t border-slate-50 dark:border-slate-800">
+             {{ $transactions->links() }}
         </div>
     </div>
 </div>

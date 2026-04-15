@@ -17,14 +17,14 @@
         <div class="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-[2rem] border border-indigo-100 dark:border-indigo-900/30">
             <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 block">Duty Rounds</span>
             <div class="flex items-baseline gap-2">
-                <span class="text-3xl font-black text-indigo-600 dark:text-indigo-400 tracking-tighter">{{ count($shifts) }}</span>
-                <span class="text-[10px] font-bold text-indigo-400 uppercase">Registered</span>
+                <span class="text-3xl font-black text-indigo-600 dark:text-indigo-400 tracking-tighter">{{ $shifts->total() }}</span>
+                <span class="text-[10px] font-bold text-indigo-400 uppercase">Records</span>
             </div>
         </div>
         <div class="md:col-span-3 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div class="max-w-xl">
-                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Shift Protocol</span>
-                 <p class="text-sm font-bold text-slate-600 dark:text-slate-400 italic">Audit and reconciliation records of daily operations, ensuring accountability for every currency transaction and cash variance.</p>
+                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Audit Protocol</span>
+                 <p class="text-sm font-bold text-slate-600 dark:text-slate-400 italic">Financial reconciliation of shifts within the selected range. Ensuring zero variance across all duty rounds.</p>
             </div>
              <x-heroicon-o-clock class="w-12 h-12 text-slate-200" />
         </div>
@@ -36,7 +36,7 @@
                 <thead class="bg-slate-50/50 dark:bg-slate-800/50">
                     <tr>
                         <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-l-2xl">Personnel</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Time Spans</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Time Span</th>
                         <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Cash Metrics</th>
                         <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Variance</th>
                         <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right rounded-r-2xl">Status</th>
@@ -46,21 +46,21 @@
                     @forelse($shifts as $shift)
                         <tr class="group">
                             <td class="px-8 py-6 rounded-l-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
-                                <p class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ $shift['user']['name'] ?? 'System' }}</p>
+                                <p class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ $shift->user->name ?? 'System' }}</p>
                                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Cashier Station</p>
                             </td>
                             <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
                                 <div class="space-y-1">
                                     <div class="flex items-center gap-2">
                                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">{{ \Carbon\Carbon::parse($shift['created_at'])->format('H:i') }}</span>
+                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">{{ $shift->created_at->format('H:i') }}</span>
                                     </div>
-                                    @if($shift['end_time'] ?? null)
+                                    @if($shift->status === 'closed')
                                         <div class="flex items-center gap-2">
                                             <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                                            <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">{{ \Carbon\Carbon::parse($shift['end_time'])->format('H:i') }}</span>
+                                            <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">{{ $shift->closed_at->format('H:i') }}</span>
                                         </div>
-                                    @elseif($shift['status'] === 'open')
+                                    @else
                                         <div class="flex items-center gap-2">
                                             <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
                                             <span class="text-[10px] font-black text-sky-500 uppercase tracking-widest">Active</span>
@@ -69,15 +69,15 @@
                                 </div>
                             </td>
                             <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all text-xs font-bold text-slate-500">
-                                <p>Start: {{ number_format($shift['starting_cash'], 0) }}</p>
-                                @if($shift['status'] === 'closed')
-                                    <p class="text-slate-900 dark:text-white mt-1">Actual: {{ number_format($shift['actual_ending_cash'], 0) }}</p>
+                                <p>Start: {{ number_format($shift->starting_cash, 0) }}</p>
+                                @if($shift->status === 'closed')
+                                    <p class="text-slate-900 dark:text-white mt-1">Actual: {{ number_format($shift->actual_ending_cash, 0) }}</p>
                                 @endif
                             </td>
                             <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
-                                @if($shift['status'] === 'closed')
+                                @if($shift->status === 'closed')
                                     @php
-                                        $variance = $shift['actual_ending_cash'] - $shift['expected_ending_cash'];
+                                        $variance = $shift->actual_ending_cash - $shift->expected_ending_cash;
                                     @endphp
                                     <span class="text-xs font-black {{ $variance == 0 ? 'text-emerald-500' : 'text-rose-500' }}">
                                         {{ $variance > 0 ? '+' : '' }}{{ number_format($variance, 0) }}
@@ -87,8 +87,8 @@
                                 @endif
                             </td>
                             <td class="px-8 py-6 rounded-r-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all text-right">
-                                <span class="px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-[0.2em] {{ $shift['status'] === 'closed' ? 'bg-slate-100 text-slate-500' : 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' }}">
-                                    {{ $shift['status'] === 'closed' ? 'Terminated' : 'In Progress' }}
+                                <span class="px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-[0.2em] {{ $shift->status === 'closed' ? 'bg-slate-100 text-slate-500' : 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' }}">
+                                    {{ $shift->status === 'closed' ? 'Terminated' : 'In Progress' }}
                                 </span>
                             </td>
                         </tr>
@@ -103,10 +103,8 @@
                 </tbody>
             </table>
         </div>
-        @if($shifts->hasPages())
-            <div class="p-8 border-t border-slate-50 dark:border-slate-800">
-                {{ $shifts->links() }}
-            </div>
-        @endif
+        <div class="p-8 border-t border-slate-50 dark:border-slate-800">
+            {{ $shifts->links() }}
+        </div>
     </div>
 </div>
