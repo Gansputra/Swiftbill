@@ -61,26 +61,26 @@
             </div>
         </div>
 
-        <!-- 3. Stock Alert (Tall Bento - 1 col, 2 rows) -->
-        <div class="md:row-span-2 bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 flex flex-col justify-between shadow-sm group">
+        <!-- 3. Stock Alert (Standard Bento - 1 col, 1 row) -->
+        <div class="bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 flex flex-col justify-between shadow-sm group">
             <div>
-                <div class="w-12 h-12 flex items-center justify-center rounded-2xl {{ $lowStockProducts > 0 ? 'bg-rose-50 text-rose-600' : 'bg-green-50 text-green-600' }} mb-4">
-                    @if($lowStockProducts > 0)
-                        <x-heroicon-o-exclamation-triangle class="w-6 h-6 animate-bounce" />
-                    @else
-                        <x-heroicon-o-check-badge class="w-6 h-6" />
-                    @endif
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-2xl {{ $lowStockProducts > 0 ? 'bg-rose-50 text-rose-600' : 'bg-green-50 text-green-600' }}">
+                        @if($lowStockProducts > 0)
+                            <x-heroicon-o-exclamation-triangle class="w-5 h-5 animate-pulse" />
+                        @else
+                            <x-heroicon-o-check-badge class="w-5 h-5" />
+                        @endif
+                    </div>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Inventory</span>
                 </div>
-                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest">Inventory</h4>
                 <p class="text-2xl font-black {{ $lowStockProducts > 0 ? 'text-rose-600' : 'text-slate-900 dark:text-white' }} mt-1">
-                    {{ $lowStockProducts }} Low Items
+                    {{ $lowStockProducts }} <span class="text-xs font-bold text-slate-400">Low Items</span>
                 </p>
             </div>
-            <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800">
-                <p class="text-xs text-slate-500">Stock health is {{ $lowStockProducts > 10 ? 'Critical' : 'Good' }}</p>
-                <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
-                    <div class="bg-indigo-500 h-full rounded-full" style="width: 75%"></div>
-                </div>
+            <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
+                <span class="text-[10px] text-slate-400 font-bold">Health Scan</span>
+                <span class="text-[10px] font-black {{ $lowStockProducts > 10 ? 'text-rose-500' : 'text-emerald-500' }} uppercase tracking-tighter">{{ $lowStockProducts > 10 ? 'Critical' : 'Stable' }}</span>
             </div>
         </div>
 
