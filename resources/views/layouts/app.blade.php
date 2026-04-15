@@ -154,16 +154,7 @@
                         </div>
                     </button>
 
-                    <div class="flex items-center space-x-3 px-3 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
-                        <img class="h-8 w-8 rounded-full object-cover border border-white dark:border-slate-700 shadow-sm" 
-                             src="{{ auth()->user()->profile_photo_path ? asset('storage/' . auth()->user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&color=6366f1&background=EEF2FF&bold=true' }}" 
-                             alt="{{ auth()->user()->name }}">
-                        
-                        <div class="flex-grow min-w-0">
-                            <p class="text-sm font-semibold truncate dark:text-white">{{ auth()->user()->name }}</p>
-                            <p class="text-[10px] text-slate-400 uppercase font-bold">{{ auth()->user()->role }}</p>
-                        </div>
-                    </div>
+                    <livewire:layout.sidebar-profile />
                 </div>
             </aside>
 

@@ -2,21 +2,41 @@
 
 use App\Livewire\Actions\Logout;
 use Livewire\Volt\Component;
+use Livewire\Attributes\On; 
+use Illuminate\Support\Facades\Auth;
 
 new class extends Component
 {
+    public $userPhoto = '';
+    public $userName = '';
+
+    public function mount()
+    {
+        $this->updateData();
+    }
+
     /**
      * Log the current user out of the application.
      */
     public function logout(Logout $logout): void
     {
         $logout();
-
         $this->redirect('/', navigate: true);
+    }
+
+    #[On('profile-updated')]
+    public function updateData()
+    {
+        $user = Auth::user();
+        if ($user) {
+            $user->refresh();
+            $this->userPhoto = $user->profile_photo_path;
+            $this->userName = $user->name;
+        }
     }
 }; ?>
 
-<div class="flex items-center space-x-5">
+<div class="flex items-center space-x-5" x-data="{ stamp: Date.now() }" @profile-updated.window="stamp = Date.now()">
     {{-- DROPDOWN PROFILE MODERN --}}
     <x-dropdown align="right" width="56">
         <x-slot name="trigger">
@@ -24,14 +44,13 @@ new class extends Component
                 
                 <div class="relative overflow-hidden rounded-full ring-2 ring-transparent group-hover:ring-indigo-500/30 transition-all duration-300">
                     <img class="h-9 w-9 rounded-full object-cover transform group-hover:scale-110 transition-transform duration-500" 
-                         src="{{ auth()->user()->profile_photo_path ? asset('storage/' . auth()->user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&color=6366f1&background=EEF2FF&bold=true' }}" 
+                         :src="$wire.userPhoto ? '{{ asset('storage') }}/' + $wire.userPhoto + '?v=' + stamp : 'https://ui-avatars.com/api/?name=' + encodeURIComponent($wire.userName) + '&color=6366f1&background=EEF2FF&bold=true'" 
                          alt="{{ auth()->user()->name }}">
                     <div class="absolute inset-0 bg-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
 
                 <div class="hidden md:flex flex-col items-start ms-3 text-left leading-tight">
-                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                        {{ explode(' ', auth()->user()->name)[0] }}
+                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" x-text="$wire.userName.split(' ')[0]">
                     </span>
                     <span class="text-[9px] text-slate-400 font-medium tracking-tight">Active Member</span>
                 </div>
