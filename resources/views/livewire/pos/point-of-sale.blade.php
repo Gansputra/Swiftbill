@@ -1,31 +1,33 @@
-<div class="h-full flex flex-col space-y-6 relative">
-
+<div class="h-full relative overflow-hidden">
     @if(!$currentShift)
-        <!-- Open Shift Full Overlay -->
-        <div class="absolute inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-3xl">
-            <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 border-t-4 border-t-indigo-500">
-                <div class="text-center mb-8">
-                    <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-full mb-4">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        <!-- Open Shift Overlay - Bento Style -->
+        <div class="absolute inset-0 z-50 flex items-center justify-center bg-slate-50/60 dark:bg-slate-950/60 backdrop-blur-xl rounded-[3rem]">
+            <div class="bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-2xl max-w-md w-full border border-white dark:border-slate-800">
+                <div class="text-center mb-10">
+                    <div class="inline-flex items-center justify-center w-20 h-20 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-3xl mb-6 shadow-inner">
+                        <x-heroicon-o-key class="w-10 h-10" />
                     </div>
-                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Open Cash Register</h2>
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-2">Start a new shift</p>
+                    <h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">Shift Authorization</h2>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-[0.3em] font-black mt-3">Initial cash declaration required</p>
                 </div>
 
                 @if($hasShiftError)
-                    <div class="mb-6 p-4 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-bold border border-rose-100 uppercase tracking-wide text-center">
+                    <div class="mb-8 p-5 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center">
                         {{ $hasShiftError }}
                     </div>
                 @endif
 
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 text-center">Starting Cash in Drawer (Rp)</label>
-                        <input type="number" wire:model="startingCash" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-2xl py-4 px-4 text-center focus:ring-2 focus:ring-indigo-500 font-extrabold text-slate-900 dark:text-white" placeholder="0">
+                <div class="space-y-8">
+                    <div class="group">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 text-center">Starting Balance in Drawer</label>
+                        <div class="relative">
+                            <span class="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-black text-slate-300">Rp</span>
+                            <input type="number" wire:model="startingCash" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-[2rem] text-3xl py-6 pl-16 pr-8 text-center focus:ring-4 focus:ring-indigo-500/10 font-black text-slate-900 dark:text-white" placeholder="0">
+                        </div>
                     </div>
                     
-                    <button wire:click="openShift" class="w-full py-4 bg-indigo-600 hover:bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-indigo-100 dark:shadow-none transition-all">
-                        Open Register
+                    <button wire:click="openShift" class="w-full py-6 bg-indigo-600 hover:bg-slate-900 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all">
+                        Initialize Shift
                     </button>
                 </div>
             </div>
@@ -33,184 +35,180 @@
     @endif
 
     @if($isClosingShift)
-        <!-- Close Shift ModalOverlay -->
-        <div class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm rounded-3xl">
-            <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800">
-                <div class="flex justify-between items-center mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <!-- Close Shift Modal - Bento Style -->
+        <div class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md rounded-[3rem] p-4">
+            <div class="bg-white dark:bg-slate-900 p-8 rounded-[3rem] shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800">
+                <div class="flex justify-between items-center mb-8">
                     <div>
-                        <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Close Register</h2>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">End current shift</p>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">Terminate Shift</h2>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-widest font-black mt-1">Cash reconciliation</p>
                     </div>
-                    <button wire:click="$set('isClosingShift', false)" class="p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <button wire:click="$set('isClosingShift', false)" class="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl text-slate-400 hover:text-rose-500 transition-all">
+                        <x-heroicon-o-x-mark class="w-6 h-6" />
                     </button>
                 </div>
 
-                @if($hasShiftError)
-                    <div class="mb-6 p-4 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-bold border border-rose-100 uppercase tracking-wide text-center">
-                        {{ $hasShiftError }}
-                    </div>
-                @endif
-
-                <div class="space-y-6">
-                    <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 text-center">
-                        <span class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1">Expected Cash in Drawer</span>
-                        <span class="block text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">Rp {{ number_format($this->calculateExpectedCash(), 0) }}</span>
+                <div class="space-y-8">
+                    <div class="bg-indigo-600 p-8 rounded-[2rem] text-white shadow-xl shadow-indigo-500/20">
+                        <span class="block text-[10px] font-black uppercase tracking-[0.2em] opacity-70 mb-2 text-center">Expected Ledger Balance</span>
+                        <span class="block text-3xl font-black text-center tracking-tighter">Rp {{ number_format($this->calculateExpectedCash(), 0) }}</span>
                     </div>
 
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Actual Cash Counted (Rp)</label>
-                        <input type="number" wire:model="actualCash" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-lg py-3 px-4 focus:ring-2 focus:ring-indigo-500 font-bold">
-                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Actual Physical Cash</label>
+                            <input type="number" wire:model="actualCash" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-xl py-4 px-6 focus:ring-4 focus:ring-indigo-500/10 font-black text-slate-900 dark:text-white">
+                        </div>
 
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Closing Notes (Optional)</label>
-                        <textarea wire:model="closingNotes" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs py-3 px-4 focus:ring-2 focus:ring-indigo-500" rows="2" placeholder="Record any cash variance reasons here..."></textarea>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Observational Notes</label>
+                            <textarea wire:model="closingNotes" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-xs font-bold py-4 px-6 focus:ring-4 focus:ring-indigo-500/10" rows="3" placeholder="Optional notes..."></textarea>
+                        </div>
                     </div>
                     
-                    <button wire:click="confirmCloseShift" class="w-full py-4 bg-rose-500 hover:bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-rose-100 dark:shadow-none transition-all">
-                        Confirm Close Shift
+                    <button wire:click="confirmCloseShift" class="w-full py-5 bg-rose-500 hover:bg-rose-600 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-rose-500/20 active:scale-95 transition-all">
+                        Finalize & Close
                     </button>
                 </div>
             </div>
         </div>
     @endif
 
-    <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8 overflow-hidden {{ (!$currentShift || $isClosingShift) ? 'opacity-20 pointer-events-none blur-sm' : '' }} transition-all duration-300">
+    <!-- Main Bento POS Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full p-2 {{ (!$currentShift || $isClosingShift) ? 'opacity-10 pointer-events-none blur-xl' : '' }} transition-all duration-700">
         
-        <!-- Product Catalog (Left) -->
-        <div class="lg:col-span-8 flex flex-col space-y-6 overflow-hidden">
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow-sm">
-                <div class="flex items-center space-x-3">
-                    <div class="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-500">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                    <h3 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Catalog</h3>
+        <!-- Column Left: Catalog (8/12) -->
+        <div class="lg:col-span-8 flex flex-col gap-6 overflow-hidden">
+            
+            <!-- Box 1: Search & Filter Bento -->
+            <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] p-4 flex items-center gap-4 shadow-sm group">
+                <div class="flex-grow relative">
+                    <x-heroicon-o-magnifying-glass class="w-5 h-5 absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
+                    <input type="text" wire:model.live="searchTerm" placeholder="Scan SKU or Search for products..." class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-[1.8rem] text-sm font-bold py-4 pl-14 pr-6 focus:ring-4 focus:ring-indigo-500/10 placeholder-slate-300 transition-all">
                 </div>
-                <div class="flex items-center space-x-4 w-1/2 justify-end">
-                    <input type="text" wire:model.live="searchTerm" placeholder="Search products..." class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-xs py-2 focus:ring-2 focus:ring-indigo-500">
-                    <button wire:click="initiateCloseShift" class="flex-shrink-0 px-4 py-2 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 font-bold text-[10px] uppercase tracking-widest rounded-xl hover:bg-rose-500 hover:text-white transition-colors border border-rose-200 dark:border-rose-800/50 shadow-sm">
-                        Close Shift
-                    </button>
+                <div class="hidden md:flex items-center gap-2 px-6 py-4 border-l border-slate-100 dark:border-slate-800">
+                    <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Cashier: {{ auth()->user()->name }}</span>
                 </div>
+                <button wire:click="initiateCloseShift" class="p-4 bg-rose-50 dark:bg-rose-950/30 text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all group/btn">
+                    <x-heroicon-o-power class="w-6 h-6 group-hover/btn:rotate-12 transition-transform" />
+                </button>
             </div>
 
-            <div class="flex-grow overflow-y-auto grid grid-cols-2 md:grid-cols-4 gap-4 pr-1 pb-4 content-start">
-                @forelse($products as $product)
-                    <div wire:click="addToCart({{ $product->id }})" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 cursor-pointer hover:border-indigo-500 hover:shadow-lg transition-all group relative">
-                        <div class="aspect-square mb-3 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden relative">
-                            @if($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}" class="h-full w-full object-cover">
-                            @else
-                                <div class="h-full w-full flex items-center justify-center text-[10px] text-slate-400 font-bold uppercase">No Photo</div>
-                            @endif
-                            <div class="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/10 transition-colors"></div>
-                        </div>
-                        <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate mb-1">{{ $product->name }}</h4>
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] font-bold text-indigo-600">Rp {{ number_format($product->sell_price, 0) }}</span>
-                            <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">{{ $product->stock }} Left</span>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-full py-20 text-center flex flex-col items-center justify-center space-y-3">
-                        <div class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-300">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                        </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No matching products found</p>
-                    </div>
-                @endforelse
-            </div>
-        </div>
-
-        <!-- Checkout Section (Right) -->
-        <div class="lg:col-span-4 flex flex-col space-y-6 overflow-hidden">
-            <div class="flex-grow bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl flex flex-col overflow-hidden">
-                <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Current Cart</h3>
-                    <span class="text-[10px] font-bold px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-500">{{ count($cart) }} Items</span>
-                </div>
-
-                <div class="flex-grow overflow-y-auto p-4 space-y-3">
-                    @if (session()->has('error'))
-                        <div class="p-4 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-bold border border-rose-100 uppercase tracking-wide">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
-                    @forelse($cart as $id => $item)
-                        <div class="group bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl flex flex-col transition hover:bg-slate-100 dark:hover:bg-slate-800 relative space-y-2">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-grow min-w-0 pr-4">
-                                    <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ $item['name'] }}</h4>
-                                    <p class="text-[10px] font-bold text-indigo-500">Rp {{ number_format($item['sell_price'], 0) }}</p>
-                                </div>
-                                <div class="flex items-center space-x-3">
-                                    <div class="flex items-center bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-1">
-                                        <button wire:click="updateQuantity({{ $id }}, {{ $item['quantity'] - 1 }})" class="p-1 hover:text-indigo-600"><svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg></button>
-                                        <span class="text-xs font-bold w-6 text-center text-slate-900 dark:text-white">{{ $item['quantity'] }}</span>
-                                        <button wire:click="updateQuantity({{ $id }}, {{ $item['quantity'] + 1 }})" class="p-1 hover:text-indigo-600"><svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
-                                    </div>
-                                    <button wire:click="removeFromCart({{ $id }})" class="text-slate-300 hover:text-rose-500 transition">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                    </button>
+            <!-- Box 2: Product Grid Bento -->
+            <div class="flex-grow bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] p-8 overflow-y-auto shadow-sm">
+                <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-6">
+                    @forelse($products as $product)
+                        <div wire:click="addToCart({{ $product->id }})" class="group cursor-pointer">
+                            <div class="relative aspect-square rounded-[2rem] bg-slate-50 dark:bg-slate-800 border border-transparent group-hover:border-indigo-500 transition-all overflow-hidden shadow-sm group-hover:shadow-xl group-hover:shadow-indigo-500/10 group-active:scale-95">
+                                @if($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                @else
+                                    <div class="h-full w-full flex items-center justify-center text-[10px] font-black text-slate-300 uppercase opacity-50">SKU Void</div>
+                                @endif
+                                
+                                <div class="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/80 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                    <p class="text-white text-[10px] font-black uppercase tracking-widest mb-1">Add to Cart</p>
+                                    <p class="text-white text-lg font-black tracking-tighter">Rp {{ number_format($product->sell_price, 0) }}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center text-[10px] font-bold">
-                                <span class="text-slate-400 mr-2 uppercase">Disc Rp:</span>
-                                <input type="number" min="0" wire:change="updateDiscount({{ $id }}, $event.target.value)" value="{{ $item['discount'] ?? 0 }}" class="w-20 h-6 px-1 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded text-center text-rose-500 focus:ring-0 focus:border-indigo-500" placeholder="0">
+                            <div class="mt-4 px-2">
+                                <p class="text-xs font-black text-slate-800 dark:text-white truncate uppercase tracking-tighter">{{ $product->name }}</p>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">{{ $product->stock }} in stock</p>
                             </div>
                         </div>
                     @empty
-                        <div class="h-full flex flex-col items-center justify-center space-y-4 py-20 opacity-30">
-                            <div class="w-16 h-16 border-2 border-dashed border-slate-300 rounded-full flex items-center justify-center">
-                                <svg class="h-6 w-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                        <div class="col-span-full py-40 flex flex-col items-center justify-center grayscale opacity-30">
+                            <x-heroicon-o-cube-transparent class="w-16 h-16 text-slate-300 mb-6" />
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Empty Catalog State</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        <!-- Column Right: Checkout (4/12) - Bento Box Taller -->
+        <div class="lg:col-span-4 flex flex-col gap-6 overflow-hidden">
+            
+            <!-- Box 3: Cart Feed Bento (Dark Theme) -->
+            <div class="flex-grow bg-slate-900 border border-slate-800 rounded-[3rem] shadow-2xl flex flex-col overflow-hidden relative">
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/20 rounded-full blur-[80px] pointer-events-none"></div>
+
+                <div class="relative p-8 border-b border-white/5 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-black text-white tracking-tighter">Current Order</h3>
+                        <p class="text-[9px] font-black text-white/40 uppercase tracking-widest mt-1">{{ count($cart) }} line items</p>
+                    </div>
+                    <button wire:click="removeFromCart('all')" class="text-[9px] font-black text-rose-500 uppercase tracking-widest hover:text-white transition">Clear all</button>
+                </div>
+
+                <div class="relative flex-grow overflow-y-auto p-6 space-y-4">
+                    @forelse($cart as $id => $item)
+                        <div class="group bg-white/5 backdrop-blur-sm border border-white/5 px-6 py-5 rounded-[2rem] flex items-center gap-4 hover:bg-white/10 transition-all">
+                            <div class="flex-grow min-w-0 font-bold text-white">
+                                <h4 class="text-xs truncate uppercase tracking-tighter">{{ $item['name'] }}</h4>
+                                <p class="text-[10px] text-indigo-400 mt-1">Rp {{ number_format($item['sell_price'], 0) }}</p>
                             </div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cart is empty</p>
+                            <div class="flex items-center gap-3">
+                                <button wire:click="updateQuantity({{ $id }}, {{ $item['quantity'] - 1 }})" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 text-white hover:bg-rose-500 transition-all font-black text-xl leading-none">-</button>
+                                <span class="text-base font-black text-white w-4 text-center">{{ $item['quantity'] }}</span>
+                                <button wire:click="updateQuantity({{ $id }}, {{ $item['quantity'] + 1 }})" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 text-white hover:bg-indigo-500 transition-all font-black text-xl leading-none">+</button>
+                            </div>
+                            <button wire:click="removeFromCart({{ $id }})" class="opacity-0 group-hover:opacity-100 p-2 text-white/30 hover:text-rose-500 transition-all">
+                                <x-heroicon-o-trash class="w-4 h-4" />
+                            </button>
+                        </div>
+                    @empty
+                        <div class="h-full flex flex-col items-center justify-center text-center py-20 opacity-20">
+                            <x-heroicon-o-shopping-bag class="w-12 h-12 text-white mb-4" />
+                            <p class="text-[10px] font-black text-white uppercase tracking-widest">Awaiting selection...</p>
                         </div>
                     @endforelse
                 </div>
 
-                <div class="p-6 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 space-y-6">
-                    @if($this->totalDiscount > 0)
-                    <div class="flex justify-between items-end border-b border-dashed border-slate-200 dark:border-slate-700 pb-2">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Discount</span>
-                        <span class="text-sm font-bold text-rose-500 tracking-tighter">- Rp {{ number_format($this->totalDiscount, 0) }}</span>
-                    </div>
-                    @endif
-                    <div class="flex justify-between items-end">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Grand Total</span>
-                        <span class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tighter">Rp {{ number_format($this->total, 0) }}</span>
-                    </div>
-
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between border-b dark:border-slate-800 pb-2">
-                                <span class="text-xs font-bold text-slate-500 uppercase tracking-tight">Method</span>
-                                <select wire:model.live="paymentMethod" class="text-xs font-bold bg-transparent border-none focus:ring-0 p-0 text-indigo-600 cursor-pointer">
-                                    <option value="cash">Cash Payment</option>
-                                    <option value="qris">QRIS Digital</option>
-                                    <option value="transfer">Bank Transfer</option>
-                                </select>
+                <!-- Box 4: Execution Bento (Sticky Bottom) -->
+                <div class="relative p-8 bg-white/5 backdrop-blur-2xl border-t border-white/10 space-y-8">
+                    <div class="space-y-4">
+                        @if($this->totalDiscount > 0)
+                            <div class="flex justify-between items-center px-2">
+                                <span class="text-[10px] font-black text-white/40 uppercase tracking-widest">Global Savings</span>
+                                <span class="text-sm font-black text-rose-500 tracking-tighter">- Rp {{ number_format($this->totalDiscount, 0) }}</span>
                             </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-                                    <span class="text-[8px] font-bold text-slate-400 uppercase block mb-1">Received</span>
-                                    <input type="number" wire:model.live="totalPaid" class="w-full text-sm font-bold bg-transparent border-none focus:ring-0 p-0 text-slate-900 dark:text-white" 
-                                           placeholder="0" 
-                                           {{ $paymentMethod !== 'cash' ? 'readonly' : '' }}>
-                                </div>
-                            <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-                                <span class="text-[8px] font-bold text-slate-400 uppercase block mb-1">Return</span>
-                                <span class="text-sm font-bold {{ $this->change >= 0 ? 'text-green-500' : 'text-rose-500' }}">Rp {{ number_format($this->change, 0) }}</span>
-                            </div>
+                        @endif
+                        <div class="flex justify-between items-center px-2">
+                            <span class="text-xs font-black text-white/60 uppercase tracking-widest">Settlement</span>
+                            <span class="text-3xl font-black text-white tracking-tighter">Rp {{ number_format($this->total, 0) }}</span>
                         </div>
                     </div>
 
-                    <button wire:click="checkout" class="group relative w-full py-4 bg-indigo-600 hover:bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-xl shadow-indigo-100 dark:shadow-none transition-all overflow-hidden">
-                        <span class="relative z-10">Complete Checkout</span>
-                        <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    </button>
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-[1.8rem] overflow-hidden">
+                            <div class="p-4 bg-white/5">
+                                <label class="block text-[8px] font-black text-white/40 uppercase tracking-widest mb-1 px-1">Instrument</label>
+                                <select wire:model.live="paymentMethod" class="w-full bg-transparent border-none p-0 text-[10px] font-black text-indigo-400 focus:ring-0 uppercase tracking-widest cursor-pointer">
+                                    <option value="cash">Currency</option>
+                                    <option value="qris">E-Wallet</option>
+                                    <option value="transfer">Bank Ledger</option>
+                                </select>
+                            </div>
+                            <div class="p-4 bg-white/5">
+                                <label class="block text-[8px] font-black text-white/40 uppercase tracking-widest mb-1 px-1">Received</label>
+                                <input type="number" wire:model.live="totalPaid" class="w-full bg-transparent border-none p-0 text-sm font-black text-white focus:ring-0 placeholder-white/20" placeholder="0" {{ $paymentMethod !== 'cash' ? 'readonly' : '' }}>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between px-6 py-4 bg-white/5 rounded-2xl border border-white/5">
+                             <span class="text-[9px] font-black text-white/40 uppercase tracking-widest">Change</span>
+                             <span class="text-lg font-black {{ $this->change >= 0 ? 'text-emerald-400' : 'text-rose-500 animate-pulse' }}">Rp {{ number_format($this->change, 0) }}</span>
+                        </div>
+
+                        <button wire:click="checkout" class="group relative w-full py-6 bg-indigo-600 hover:bg-white text-white hover:text-indigo-950 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.4em] shadow-2xl shadow-indigo-600/30 active:scale-95 transition-all duration-500 overflow-hidden">
+                            <span class="relative z-10 flex items-center justify-center gap-3">
+                                Execute Settlement
+                                <x-heroicon-o-arrow-right-circle class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

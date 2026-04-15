@@ -13,6 +13,7 @@ class SupplierManager extends Component
 
     public $name, $email, $phone, $address, $supplierId;
     public $isEditing = false;
+    public $showForm = false;
     public $searchTerm = '';
 
     protected $rules = [

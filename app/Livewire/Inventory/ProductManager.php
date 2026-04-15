@@ -42,10 +42,13 @@ class ProductManager extends Component
             ->latest()
             ->paginate(10);
 
+        $lowStockCount = Product::whereColumn('stock', '<=', 'min_stock')->count();
+
         return view('livewire.inventory.product-manager', [
             'products' => $products,
             'categories' => Category::all(),
             'suppliers' => Supplier::all(),
+            'lowStockProducts' => $lowStockCount
         ]);
     }
 

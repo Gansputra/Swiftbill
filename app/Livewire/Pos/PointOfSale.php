@@ -141,7 +141,11 @@ class PointOfSale extends Component
 
     public function removeFromCart($productId)
     {
-        unset($this->cart[$productId]);
+        if ($productId === 'all') {
+            $this->cart = [];
+        } else {
+            unset($this->cart[$productId]);
+        }
         $this->calculateTotal();
     }
 

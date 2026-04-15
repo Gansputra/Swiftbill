@@ -13,6 +13,7 @@ class CategoryManager extends Component
 
     public $name, $description, $categoryId;
     public $isEditing = false;
+    public $showForm = false;
     public $searchTerm = '';
 
     protected $rules = [
