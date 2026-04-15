@@ -45,14 +45,14 @@ class PointOfSale extends Component
             'status' => 'open',
             'starting_cash' => (float) $this->startingCash,
         ]);
-        
+
         $this->hasShiftError = '';
     }
 
     public function calculateExpectedCash()
     {
         if (!$this->currentShift) return 0;
-        
+
         // Net cash added to drawer = total_price (for cash payments)
         $cashSales = $this->currentShift->transactions()
             ->where('payment_method', 'cash')
@@ -90,7 +90,7 @@ class PointOfSale extends Component
         $this->total = 0;
         $this->totalPaid = 0;
         $this->change = 0;
-        
+
         session()->flash('success', 'Shift has been successfully closed.');
         $this->redirect(route('pos.index'), navigate: false);
     }
@@ -98,7 +98,7 @@ class PointOfSale extends Component
     public function render()
     {
         $products = collect();
-        
+
         if ($this->currentShift) {
             $products = Product::where('stock', '>', 0)
                 ->where(function ($query) {
@@ -132,6 +132,7 @@ class PointOfSale extends Component
                 'sell_price' => $product->sell_price,
                 'quantity' => 1,
                 'sku' => $product->sku,
+                'stock' => $product->stock,
                 'discount' => 0
             ];
         }
@@ -154,8 +155,7 @@ class PointOfSale extends Component
         if ($quantity <= 0) {
             unset($this->cart[$productId]);
         } else {
-            $product = Product::find($productId);
-            if ($quantity <= $product->stock) {
+            if ($quantity <= ($this->cart[$productId]['stock'] ?? PHP_INT_MAX)) {
                 $this->cart[$productId]['quantity'] = $quantity;
             } else {
                 session()->flash('error', 'Requested quantity exceeds stock.');
@@ -224,7 +224,7 @@ class PointOfSale extends Component
 
         session()->flash('success', 'Transaction completed successfully.');
         $invoiceNumber = $transaction->invoice_number;
-        
+
         $this->cart = [];
         $this->total = 0;
         $this->totalPaid = 0;

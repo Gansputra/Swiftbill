@@ -12,7 +12,7 @@ class SalesReport extends Component
 
     public $dateFrom;
     public $dateTo;
-    
+
     public $totalRevenue = 0;
     public $totalDiscount = 0;
     public $totalProfit = 0;
@@ -38,20 +38,22 @@ class SalesReport extends Component
             ->whereDate('created_at', '<=', $this->dateTo)
             ->latest();
 
-        // Calculate Totals using query (to avoid putting thousands of models in memory)
-        $this->totalRevenue = (float) $query->sum('total_price');
-        $this->totalDiscount = (float) $query->sum('total_discount');
-        $this->totalTransactions = $query->count();
-
-        // Calculate Total Profit (Requires some raw DB heavy lifting or simplified logic)
-        // For efficiency, we calculate summary without loading full relations into memory
-        $totalCogs = \DB::table('transaction_items')
-            ->join('transactions', 'transaction_items.transaction_id', '=', 'transactions.id')
+        // Calculate Totals in single query
+        $totals = Transaction::selectRaw('
+            COUNT(*) as total_transactions,
+            SUM(total_price) as total_revenue,
+            SUM(total_discount) as total_discount
+        ')
+            ->join('transaction_items', 'transactions.id', '=', 'transaction_items.transaction_id')
+            ->selectRaw('SUM(transaction_items.quantity * transaction_items.cogs) as total_cogs')
             ->whereDate('transactions.created_at', '>=', $this->dateFrom)
             ->whereDate('transactions.created_at', '<=', $this->dateTo)
-            ->sum(\DB::raw('quantity * cogs'));
+            ->first();
 
-        $this->totalProfit = $this->totalRevenue - $totalCogs;
+        $this->totalRevenue = (float) ($totals->total_revenue ?? 0);
+        $this->totalDiscount = (float) ($totals->total_discount ?? 0);
+        $this->totalTransactions = (int) ($totals->total_transactions ?? 0);
+        $this->totalProfit = $this->totalRevenue - ($totals->total_cogs ?? 0);
 
         return view('livewire.reports.sales-report', [
             'transactions' => $query->paginate(15)

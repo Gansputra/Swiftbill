@@ -14,7 +14,7 @@ class TransactionService
     {
         return DB::transaction(function () use ($data, $cartItems) {
             $invoiceNumber = 'INV-' . date('Ymd') . '-' . strtoupper(Str::random(5));
-            
+
             $activeShift = \App\Models\CashShift::where('user_id', auth()->id())
                 ->where('status', 'open')
                 ->first();
@@ -31,9 +31,13 @@ class TransactionService
                 'customer_name' => $data['customer_name'] ?? 'Guest',
             ]);
 
+            // Batch load all products to avoid N+1 queries
+            $productIds = array_column($cartItems, 'product_id');
+            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
             foreach ($cartItems as $item) {
-                $product = Product::find($item['product_id']);
-                
+                $product = $products[$item['product_id']];
+
                 // Reduce Stock
                 $product->decrement('stock', $item['quantity']);
 

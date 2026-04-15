@@ -13,7 +13,7 @@ class ShiftLog extends Component
 
     public $dateFrom;
     public $dateTo;
-    
+
     public $totalOverage = 0;
     public $totalShortage = 0;
     public $totalSystemExpected = 0;
@@ -40,25 +40,22 @@ class ShiftLog extends Component
 
         $shifts = $query->paginate(10);
 
-        // Recalculate summary (Only for closed shifts in this date range)
-        $summary = CashShift::whereDate('created_at', '>=', $this->dateFrom)
+        // Calculate summary in single query
+        $summary = CashShift::selectRaw('
+            SUM(CASE WHEN (actual_ending_cash - expected_ending_cash) > 0 
+                THEN (actual_ending_cash - expected_ending_cash) ELSE 0 END) as totalOverage,
+            SUM(CASE WHEN (actual_ending_cash - expected_ending_cash) < 0 
+                THEN ABS(actual_ending_cash - expected_ending_cash) ELSE 0 END) as totalShortage,
+            SUM(expected_ending_cash) as totalSystemExpected
+        ')
+            ->whereDate('created_at', '>=', $this->dateFrom)
             ->whereDate('created_at', '<=', $this->dateTo)
             ->where('status', 'closed')
-            ->get();
+            ->first();
 
-        $this->totalOverage = 0;
-        $this->totalShortage = 0;
-        $this->totalSystemExpected = 0;
-
-        foreach ($summary as $shift) {
-            $variance = $shift->actual_ending_cash - $shift->expected_ending_cash;
-            if ($variance > 0) {
-                $this->totalOverage += $variance;
-            } elseif ($variance < 0) {
-                $this->totalShortage += abs($variance);
-            }
-            $this->totalSystemExpected += $shift->expected_ending_cash;
-        }
+        $this->totalOverage = $summary->totalOverage ?? 0;
+        $this->totalShortage = $summary->totalShortage ?? 0;
+        $this->totalSystemExpected = $summary->totalSystemExpected ?? 0;
 
         return view('livewire.reports.shift-log', [
             'shifts' => $shifts

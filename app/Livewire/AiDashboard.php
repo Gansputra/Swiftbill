@@ -7,6 +7,8 @@ use App\Services\GeminiAiService;
 use App\Models\Transaction;
 use App\Models\Product;
 use App\Models\AiChatMessage;
+use App\Jobs\ProcessAiResponse;
+use Illuminate\Support\Facades\DB;
 
 class AiDashboard extends Component
 {
@@ -21,7 +23,7 @@ class AiDashboard extends Component
 
         if ($history->isEmpty()) {
             $welcome = 'Hello! I am your Swiftbill AI Assistant. You can ask me to analyze sales or check stock levels in natural language.';
-            
+
             $msg = AiChatMessage::create([
                 'user_id' => $userId,
                 'role' => 'ai',
@@ -29,7 +31,7 @@ class AiDashboard extends Component
             ]);
 
             $this->chatMessages[] = [
-                'role' => 'ai', 
+                'role' => 'ai',
                 'content' => $welcome,
                 'time' => $msg->created_at->format('d M Y, H:i')
             ];
@@ -51,7 +53,7 @@ class AiDashboard extends Component
 
         $prompt = $this->userMessage;
         $this->userMessage = '';
-        
+
         $userId = auth()->id();
 
         // 1. Save and show User Message
@@ -63,7 +65,11 @@ class AiDashboard extends Component
         $this->chatMessages[] = ['role' => 'user', 'content' => $prompt, 'time' => $userMsg->created_at->format('d M Y, H:i')];
 
         // Context injection — rich data for AI
-        $products = Product::select('name', 'stock', 'sell_price')->get()->toArray();
+        $products = Product::select('name', 'stock', 'sell_price')
+            ->orderBy(DB::raw('stock * sell_price'), 'desc')
+            ->limit(50)
+            ->get()
+            ->toArray();
         $todaySales = Transaction::whereDate('created_at', today())->sum('total_price');
 
         // Top selling products (last 30 days)
@@ -97,15 +103,11 @@ Context about the current database:
 
 User's Question: " . $prompt;
 
-        $response = $aiService->generateContent($fullPrompt);
+        // Dispatch AI response job asynchronously
+        ProcessAiResponse::dispatch($fullPrompt, $userId);
 
-        // 2. Save and show AI Response
-        $aiMsg = AiChatMessage::create([
-            'user_id' => $userId,
-            'role' => 'ai',
-            'content' => $response
-        ]);
-        $this->chatMessages[] = ['role' => 'ai', 'content' => $response, 'time' => $aiMsg->created_at->format('d M Y, H:i')];
+        // Show loading message
+        $this->chatMessages[] = ['role' => 'ai', 'content' => 'Thinking...', 'time' => now()->format('d M Y, H:i'), 'loading' => true];
     }
 
     public function render()

@@ -31,11 +31,18 @@ class Overview extends Component
         // 7-day Revenue Trend Data
         $chartData = [];
         $chartLabels = [];
+        $revenueData = Transaction::selectRaw('DATE(created_at) as date, SUM(total_price) as revenue')
+            ->where('created_at', '>=', now()->subDays(6))
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get()
+            ->keyBy('date');
+
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i)->format('Y-m-d');
             $label = now()->subDays($i)->format('D'); // Mon, Tue, etc.
-            $revenue = Transaction::whereDate('created_at', $date)->sum('total_price');
-            $chartData[] = (int) $revenue;
+            $revenue = (int) ($revenueData[$date]->revenue ?? 0);
+            $chartData[] = $revenue;
             $chartLabels[] = $label;
         }
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TransactionItem extends Model
 {
     protected $guarded = [];
+    protected $with = ['product'];
 
     public function product()
     {

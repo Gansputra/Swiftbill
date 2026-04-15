@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Supplier;
 use App\Services\ProductService;
 use Livewire\WithPagination;
+use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
 
 class ProductManager extends Component
@@ -19,6 +20,18 @@ class ProductManager extends Component
     public $isEditing = false;
     public $showForm = false;
     public $searchTerm = '';
+
+    #[Computed]
+    public function categories()
+    {
+        return Category::all();
+    }
+
+    #[Computed]
+    public function suppliers()
+    {
+        return Supplier::all();
+    }
 
     protected $rules = [
         'name' => 'required|min:3',
@@ -46,8 +59,8 @@ class ProductManager extends Component
 
         return view('livewire.inventory.product-manager', [
             'products' => $products,
-            'categories' => Category::all(),
-            'suppliers' => Supplier::all(),
+            'categories' => $this->categories,
+            'suppliers' => $this->suppliers,
             'lowStockProducts' => $lowStockCount
         ]);
     }
@@ -123,7 +136,7 @@ class ProductManager extends Component
         ]);
 
         $product = Product::findOrFail($this->productId);
-        
+
         $data = [
             'name' => $this->name,
             'sku' => $this->sku,
