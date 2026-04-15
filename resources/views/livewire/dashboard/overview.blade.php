@@ -1,114 +1,168 @@
-<div class="space-y-8">
-    <!-- Header Summary -->
-    <div class="flex items-center justify-between">
+<div class="space-y-6">
+    <!-- Header: Simple & Elegant -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">System Overview</h2>
-            <p class="text-sm text-slate-500">Welcome back. Here is what is happening with SwiftBill today.</p>
+            <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Dashboard</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Business performance at a glance.</p>
         </div>
-    </div>
-
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition hover:shadow-md">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Daily Revenue</p>
-            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Rp {{ number_format($dailyRevenue, 0) }}</h3>
-            <div class="mt-4 flex items-center text-[10px] font-bold text-green-500 uppercase">
-                <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"></path></svg>
-                Active Growth
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition hover:shadow-md">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Transactions</p>
-            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">{{ $dailySalesCount }}</h3>
-            <div class="mt-4 flex items-center text-[10px] font-bold text-slate-400 uppercase">
-                Updated just now
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition hover:shadow-md">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Stock Alerts</p>
-            <h3 class="text-2xl font-bold {{ $lowStockProducts > 0 ? 'text-rose-600' : 'text-slate-900 dark:text-white' }}">{{ $lowStockProducts }}</h3>
-            <div class="mt-4 flex items-center text-[10px] font-bold {{ $lowStockProducts > 0 ? 'text-rose-500' : 'text-green-500' }} uppercase">
-                Items need attention
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition hover:shadow-md">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total SKU</p>
-            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">{{ $totalProducts }}</h3>
-            <div class="mt-4 flex items-center text-[10px] font-bold text-indigo-500 uppercase">
-                Managed Products
+        <div class="flex items-center gap-3">
+            <div class="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center">
+                <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                Live System
             </div>
         </div>
     </div>
 
-    <!-- Data Sections -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-        <!-- Top Products -->
-        <div class="md:col-span-4 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Top Performing</h3>
-                <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 rounded-full">Unit Sales</span>
+    <!-- Bento Grid Structure -->
+    <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-4 gap-4 min-h-[800px]">
+        
+        <!-- 1. Main Revenue (Large Bento - spans 2 cols, 2 rows) -->
+        <div class="md:col-span-2 md:row-span-2 bg-indigo-600 dark:bg-indigo-500 rounded-[2.5rem] p-8 relative overflow-hidden group flex flex-col justify-between shadow-xl shadow-indigo-200 dark:shadow-none">
+            <!-- Decorative Circle -->
+            <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-500"></div>
+            
+            <div class="relative">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="p-2 bg-white/20 rounded-xl">
+                        <x-heroicon-o-presentation-chart-line class="w-5 h-5 text-white" />
+                    </div>
+                    <span class="text-white/80 text-xs font-bold uppercase tracking-widest">Total Revenue Today</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black text-white tracking-tighter">
+                    Rp {{ number_format($dailyRevenue, 0, ',', '.') }}
+                </h2>
             </div>
-            <div class="divide-y divide-slate-100 dark:divide-slate-800">
-                @forelse($topProducts as $item)
-                    <div class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-500">{{ $loop->iteration }}</div>
-                            <div>
-                                <p class="text-xs font-bold text-slate-900 dark:text-white">{{ $item->product->name }}</p>
-                                <p class="text-[10px] text-slate-400 uppercase font-medium">{{ $item->product->sku }}</p>
+
+            <div class="relative mt-8">
+                <div class="flex items-end gap-2 text-white/90">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium opacity-80">Previous period performance</p>
+                        <p class="text-lg font-bold">+12.5% <span class="text-xs font-normal opacity-70">than yesterday</span></p>
+                    </div>
+                    <div class="h-16 w-24 flex items-end gap-1 pb-1">
+                        <div class="bg-white/20 w-3 h-1/2 rounded-full"></div>
+                        <div class="bg-white/30 w-3 h-2/3 rounded-full border border-white/40"></div>
+                        <div class="bg-white/50 w-3 h-5/6 rounded-full"></div>
+                        <div class="bg-white w-3 h-full rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Transactions Count (Wide Bento - 2 cols, 1 row) -->
+        <div class="md:col-span-2 bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 flex items-center justify-between shadow-sm group hover:border-indigo-500/30 transition-all">
+            <div>
+                <span class="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 block">Total Sales</span>
+                <h3 class="text-3xl font-black text-slate-900 dark:text-white">{{ $dailySalesCount }}</h3>
+                <p class="text-xs text-slate-400 mt-1">Processed transactions</p>
+            </div>
+            <div class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-3xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
+                <x-heroicon-o-shopping-cart class="w-8 h-8" />
+            </div>
+        </div>
+
+        <!-- 3. Stock Alert (Tall Bento - 1 col, 2 rows) -->
+        <div class="md:row-span-2 bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 flex flex-col justify-between shadow-sm group">
+            <div>
+                <div class="w-12 h-12 flex items-center justify-center rounded-2xl {{ $lowStockProducts > 0 ? 'bg-rose-50 text-rose-600' : 'bg-green-50 text-green-600' }} mb-4">
+                    @if($lowStockProducts > 0)
+                        <x-heroicon-o-exclamation-triangle class="w-6 h-6 animate-bounce" />
+                    @else
+                        <x-heroicon-o-check-badge class="w-6 h-6" />
+                    @endif
+                </div>
+                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest">Inventory</h4>
+                <p class="text-2xl font-black {{ $lowStockProducts > 0 ? 'text-rose-600' : 'text-slate-900 dark:text-white' }} mt-1">
+                    {{ $lowStockProducts }} Low Items
+                </p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800">
+                <p class="text-xs text-slate-500">Stock health is {{ $lowStockProducts > 10 ? 'Critical' : 'Good' }}</p>
+                <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+                    <div class="bg-indigo-500 h-full rounded-full" style="width: 75%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Total SKU (Small Bento - 1 col, 1 row) -->
+        <div class="bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 shadow-sm">
+            <h4 class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Product SKU</h4>
+            <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-3xl font-black text-slate-900 dark:text-white">{{ $totalProducts }}</span>
+                <span class="text-[10px] font-bold text-slate-400">Items</span>
+            </div>
+            <div class="mt-3 flex -space-x-2">
+                @for($i=0; $i<4; $i++)
+                    <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-white dark:border-slate-900 flex items-center justify-center text-[8px] font-bold">P{{$i}}</div>
+                @endfor
+            </div>
+        </div>
+
+        <!-- 5. Top Products (Wide Bento - 3 cols, 2 rows) -->
+        <div class="md:col-span-3 md:row-span-2 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-8 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-black text-slate-900 dark:text-white">Trending Products</h3>
+                    <p class="text-xs text-slate-500">Your top performing items this week.</p>
+                </div>
+                <button class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl hover:bg-indigo-100 transition-colors">See Performance</button>
+            </div>
+            <div class="flex-1 px-8 py-4 overflow-y-auto">
+                <div class="space-y-4">
+                    @forelse($topProducts as $item)
+                    <div class="flex items-center group">
+                        <div class="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-sm font-black text-slate-400 group-hover:text-indigo-600 transition-colors">
+                            0{{ $loop->iteration }}
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <h5 class="text-sm font-bold text-slate-900 dark:text-white">{{ $item->product->name }}</h5>
+                            <p class="text-[10px] text-slate-400 font-medium uppercase">{{ $item->product->sku }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-black text-slate-900 dark:text-white">{{ $item->total_sold }} Sales</p>
+                            <div class="w-24 bg-slate-100 dark:bg-slate-800 h-1 rounded-full mt-1">
+                                <div class="bg-indigo-500 h-full rounded-full" style="width: {{ ($item->total_sold / $topProducts->max('total_sold')) * 100 }}%"></div>
                             </div>
                         </div>
-                        <div class="text-xs font-bold text-slate-900 dark:text-white">{{ $item->total_sold }}</div>
                     </div>
-                @empty
-                    <div class="p-8 text-center text-xs text-slate-400">No data records found.</div>
-                @endforelse
+                    @empty
+                    <div class="h-40 flex items-center justify-center text-slate-400 text-sm italic">No records available</div>
+                    @endforelse
+                </div>
             </div>
         </div>
 
-        <!-- Recent Transactions -->
-        <div class="md:col-span-8 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <h3 class="text-sm font-bold text-slate-900 dark:text-white">Recent Transactions</h3>
-                <button class="text-[10px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition">View Archive</button>
+        <!-- 6. Recent Activity (Tall Bento - 1 col, 2 rows) -->
+        <div class="md:row-span-2 bg-slate-900 dark:bg-indigo-950 rounded-[2.5rem] p-8 text-white flex flex-col shadow-2xl">
+            <div class="mb-6">
+                <h3 class="text-lg font-black tracking-tight">Activity Feed</h3>
+                <p class="text-xs text-white/50">Recent incoming orders</p>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-50 dark:bg-slate-800/50">
-                        <tr>
-                            <th class="px-6 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-700">Invoice</th>
-                            <th class="px-6 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-700">User</th>
-                            <th class="px-6 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-700 text-right">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                        @forelse($recentTransactions as $tx)
-                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                                <td class="px-6 py-4">
-                                    <p class="text-xs font-bold text-slate-900 dark:text-white">{{ $tx->invoice_number }}</p>
-                                    <p class="text-[10px] text-slate-400 font-medium">{{ $tx->created_at->format('M d, H:i') }}</p>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center space-x-2">
-                                        <div class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700"></div>
-                                        <span class="text-xs font-medium text-slate-600 dark:text-slate-400">{{ $tx->user->name }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <span class="text-xs font-bold text-slate-900 dark:text-white">Rp {{ number_format($tx->total_price, 0) }}</span>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="3" class="px-6 py-8 text-center text-xs text-slate-400">No transaction records found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            
+            <div class="flex-1 space-y-6">
+                @forelse($recentTransactions as $tx)
+                <div class="relative pl-6 border-l-2 border-white/10">
+                    <!-- Dot -->
+                    <div class="absolute -left-[7px] top-0 w-3 h-3 bg-indigo-400 rounded-full border-2 border-slate-900"></div>
+                    
+                    <div>
+                        <p class="text-xs font-black">#{{ $tx->invoice_number }}</p>
+                        <p class="text-lg font-black mt-1">Rp {{ number_format($tx->total_price, 0) }}</p>
+                        <div class="flex items-center gap-2 mt-2">
+                             <div class="w-4 h-4 bg-white/20 rounded-full"></div>
+                             <span class="text-[10px] font-bold text-white/60">{{ $tx->user->name }}</span>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <p class="text-xs text-white/30 italic">No recent transactions</p>
+                @endforelse
             </div>
+
+            <button class="mt-8 w-full py-4 bg-white/10 hover:bg-white/20 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
+                Full Transaction History
+            </button>
         </div>
+
     </div>
 </div>
