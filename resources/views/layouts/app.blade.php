@@ -53,6 +53,9 @@
         <link rel="manifest" href="{{ asset('manifest.json') }}">
         <meta name="theme-color" content="#4f46e5">
         <link rel="apple-touch-icon" href="{{ asset('icon-192x192.png') }}">
+        
+        <!-- ApexCharts -->
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     </head>
     <body class="font-sans antialiased bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300">
         

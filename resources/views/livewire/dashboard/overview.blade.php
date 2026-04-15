@@ -49,15 +49,76 @@
             </div>
         </div>
 
-        <!-- 2. Transactions Count (Wide Bento - 2 cols, 1 row) -->
-        <div class="md:col-span-2 bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 flex items-center justify-between shadow-sm group hover:border-indigo-500/30 transition-all">
-            <div>
-                <span class="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 block">Total Sales</span>
-                <h3 class="text-3xl font-black text-slate-900 dark:text-white">{{ $dailySalesCount }}</h3>
-                <p class="text-xs text-slate-400 mt-1">Processed transactions</p>
+        <!-- 2. Revenue Pulse (Interactive Chart - 2 cols, 1 row) -->
+        <div class="md:col-span-2 bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group"
+             x-data="{
+                initChart() {
+                    let options = {
+                        series: [{
+                            name: 'Revenue',
+                            data: {{ json_encode($revenueChartData) }}
+                        }],
+                        chart: {
+                            type: 'area',
+                            height: '100%',
+                            toolbar: { show: false },
+                            sparkline: { enabled: true },
+                            fontFamily: 'Outfit, sans-serif'
+                        },
+                        stroke: {
+                            curve: 'smooth',
+                            width: 3,
+                            colors: ['#4f46e5']
+                        },
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                shadeIntensity: 1,
+                                opacityFrom: 0.45,
+                                opacityTo: 0.05,
+                                stops: [20, 100],
+                                colorStops: [
+                                    { offset: 0, color: '#4f46e5', opacity: 0.4 },
+                                    { offset: 100, color: '#4f46e5', opacity: 0 }
+                                ]
+                            }
+                        },
+                        tooltip: {
+                            theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+                            x: { show: true },
+                            y: { formatter: (val) => 'Rp ' + val.toLocaleString() }
+                        },
+                        xaxis: {
+                            categories: {{ json_encode($revenueChartLabels) }},
+                            labels: { show: false },
+                            axisBorder: { show: false },
+                            axisTicks: { show: false }
+                        },
+                        yaxis: { show: false }
+                    };
+                    
+                    if (this.chart) { this.chart.destroy(); }
+                    this.chart = new ApexCharts(this.$refs.revenueChart, options);
+                    this.chart.render();
+                },
+                chart: null
+             }"
+             x-init="initChart(); $watch('darkMode', () => setTimeout(() => initChart(), 100))">
+            
+            <div class="flex items-center justify-between relative z-10 mb-2">
+                <div>
+                    <span class="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 block">Revenue Pulse</span>
+                    <h3 class="text-2xl font-black text-slate-900 dark:text-white">Active Growth</h3>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] font-black text-indigo-500 uppercase">Last 7 Days</p>
+                    <p class="text-xs font-bold text-slate-400">Trend Analysis</p>
+                </div>
             </div>
-            <div class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-3xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
-                <x-heroicon-o-shopping-cart class="w-8 h-8" />
+
+            <!-- Chart Container -->
+            <div class="absolute inset-0 top-16 -bottom-2 z-0">
+                <div x-ref="revenueChart" class="w-full h-full"></div>
             </div>
         </div>
 

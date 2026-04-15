@@ -28,6 +28,17 @@ class Overview extends Component
         // Recent Transactions
         $recentTransactions = Transaction::with('user')->latest()->take(5)->get();
 
+        // 7-day Revenue Trend Data
+        $chartData = [];
+        $chartLabels = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $label = now()->subDays($i)->format('D'); // Mon, Tue, etc.
+            $revenue = Transaction::whereDate('created_at', $date)->sum('total_price');
+            $chartData[] = (int) $revenue;
+            $chartLabels[] = $label;
+        }
+
         return view('livewire.dashboard.overview', [
             'dailySalesCount' => $dailySalesCount,
             'dailyRevenue' => $dailyRevenue,
@@ -35,6 +46,8 @@ class Overview extends Component
             'totalProducts' => $totalProducts,
             'topProducts' => $topProducts,
             'recentTransactions' => $recentTransactions,
+            'revenueChartData' => $chartData,
+            'revenueChartLabels' => $chartLabels,
         ]);
     }
 }
