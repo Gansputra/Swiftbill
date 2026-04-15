@@ -68,7 +68,7 @@
 
         <div class="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950">
             {{-- SIDEBAR --}}
-            <aside class="hidden md:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-sm z-50 transition-colors duration-300">
+            <aside class="hidden md:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-sm z-[110] transition-colors duration-300">
                 <div class="p-6 flex items-center space-x-3">
                     <div class="h-8 w-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">S</div>
                     <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">SwiftBill</span>
@@ -151,8 +151,8 @@
             </aside>
 
             {{-- MAIN CONTENT AREA --}}
-            <div class="flex-grow flex flex-col min-w-0 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
-                <header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-40 sticky top-0 transition-colors duration-300">
+            <div class="flex-grow flex flex-col min-w-0 bg-slate-50 dark:bg-slate-900 transition-colors duration-300 relative">
+                <header class="h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-[100] sticky top-0 transition-colors duration-300 shadow-sm">
                     <div class="flex items-center space-x-4">
                         <button class="md:hidden p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
