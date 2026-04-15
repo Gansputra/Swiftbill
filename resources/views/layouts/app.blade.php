@@ -46,6 +46,16 @@
             .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
             .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
             .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+
+            /* Remove number input spinners */
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input[type=number] {
+                -moz-appearance: textfield;
+            }
         </style>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])

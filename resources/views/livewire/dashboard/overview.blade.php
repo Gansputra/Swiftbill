@@ -159,37 +159,93 @@
             </div>
         </div>
 
-        <!-- 5. Top Products (Wide Bento - 3 cols, 2 rows) -->
-        <div class="md:col-span-3 md:row-span-2 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
+        <!-- 5. Top Products (Mid-Wide Bento - 2 cols, 2 rows) -->
+        <div class="md:col-span-2 md:row-span-2 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
             <div class="p-8 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900 dark:text-white">Trending Products</h3>
-                    <p class="text-xs text-slate-500">Your top performing items this week.</p>
+                    <h3 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tighter">Trending</h3>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Units Sold</p>
                 </div>
-                <button class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl hover:bg-indigo-100 transition-colors">See Performance</button>
             </div>
-            <div class="flex-1 px-8 py-4 overflow-y-auto">
-                <div class="space-y-4">
+            <div class="flex-1 px-8 py-6 overflow-y-auto">
+                <div class="space-y-6">
                     @forelse($topProducts as $item)
                     <div class="flex items-center group">
-                        <div class="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-sm font-black text-slate-400 group-hover:text-indigo-600 transition-colors">
-                            0{{ $loop->iteration }}
+                        <div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:text-indigo-600 transition-colors">
+                            {{ $loop->iteration }}
                         </div>
                         <div class="ml-4 flex-1">
-                            <h5 class="text-sm font-bold text-slate-900 dark:text-white">{{ $item->product->name }}</h5>
-                            <p class="text-[10px] text-slate-400 font-medium uppercase">{{ $item->product->sku }}</p>
+                            <h5 class="text-xs font-bold text-slate-900 dark:text-white truncate w-32">{{ $item->product->name }}</h5>
+                            <p class="text-[9px] text-slate-400 font-black uppercase tracking-tighter">{{ $item->product->sku ?? 'NO-SKU' }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-black text-slate-900 dark:text-white">{{ $item->total_sold }} Sales</p>
-                            <div class="w-24 bg-slate-100 dark:bg-slate-800 h-1 rounded-full mt-1">
-                                <div class="bg-indigo-500 h-full rounded-full" style="width: {{ ($item->total_sold / $topProducts->max('total_sold')) * 100 }}%"></div>
-                            </div>
+                             <span class="text-xs font-black text-indigo-600">{{ $item->total_sold }}</span>
                         </div>
                     </div>
                     @empty
-                    <div class="h-40 flex items-center justify-center text-slate-400 text-sm italic">No records available</div>
+                    <div class="h-40 flex items-center justify-center text-slate-400 text-xs italic">No data</div>
                     @endforelse
                 </div>
+            </div>
+        </div>
+
+        <!-- NEW: Category Share (Standard Bento - 1 col, 2 rows) -->
+        <div class="md:row-span-2 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm p-8 flex flex-col justify-between"
+             x-data="{
+                initDonut() {
+                    let options = {
+                        series: {{ json_encode($categoryChartData) }},
+                        labels: {{ json_encode($categoryChartLabels) }},
+                        chart: {
+                            type: 'donut',
+                            height: 250,
+                            fontFamily: 'Outfit, sans-serif'
+                        },
+                        stroke: { show: false },
+                        dataLabels: { enabled: false },
+                        legend: {
+                            position: 'bottom',
+                            fontSize: '10px',
+                            fontWeight: 700,
+                            labels: { colors: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b' },
+                            markers: { radius: 10 }
+                        },
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    size: '75%',
+                                    labels: {
+                                        show: true,
+                                        name: { show: false },
+                                        total: {
+                                            show: true,
+                                            label: 'Total',
+                                            fontSize: '10px',
+                                            fontWeight: 900,
+                                            color: '#6366f1',
+                                            formatter: () => '{{ array_sum($categoryChartData) }}'
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        colors: ['#4f46e5', '#818cf8', '#a5b4fc', '#c7d2fe', '#e0e7ff'],
+                        tooltip: { theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light' }
+                    };
+                    if (this.donut) { this.donut.destroy(); }
+                    this.donut = new ApexCharts(this.$refs.categoryChart, options);
+                    this.donut.render();
+                },
+                donut: null
+             }"
+             x-init="initDonut(); $watch('darkMode', () => setTimeout(() => initDonut(), 100))">
+            <div>
+                <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tighter">Market Share</h3>
+                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">By Category</p>
+            </div>
+            
+            <div class="flex-1 flex items-center justify-center py-4">
+                <div x-ref="categoryChart" class="w-full"></div>
             </div>
         </div>
 

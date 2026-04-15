@@ -39,6 +39,15 @@ class Overview extends Component
             $chartLabels[] = $label;
         }
 
+        // Category Distribution Data
+        $categorySales = TransactionItem::join('products', 'transaction_items.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->select('categories.name', DB::raw('SUM(transaction_items.quantity) as total_qty'))
+            ->groupBy('categories.name')
+            ->orderBy('total_qty', 'desc')
+            ->take(5)
+            ->get();
+
         return view('livewire.dashboard.overview', [
             'dailySalesCount' => $dailySalesCount,
             'dailyRevenue' => $dailyRevenue,
@@ -48,6 +57,8 @@ class Overview extends Component
             'recentTransactions' => $recentTransactions,
             'revenueChartData' => $chartData,
             'revenueChartLabels' => $chartLabels,
+            'categoryChartData' => $categorySales->pluck('total_qty')->toArray(),
+            'categoryChartLabels' => $categorySales->pluck('name')->toArray(),
         ]);
     }
 }
