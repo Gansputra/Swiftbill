@@ -66,6 +66,10 @@
         
         <!-- ApexCharts -->
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+        <!-- Cropper.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     </head>
     <body class="font-sans antialiased bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300">
         
