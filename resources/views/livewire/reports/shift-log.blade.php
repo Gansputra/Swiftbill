@@ -80,9 +80,9 @@
                                         <span class="text-sm font-bold text-slate-900 dark:text-white">{{ $shift['user']['name'] ?? '-' }}</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-xs font-medium text-slate-500">{{ \Carbon\Carbon::parse($shift['created_at'])->format('d M Y H:i') }}</td>
+                                <td class="px-6 py-4 text-xs font-medium text-slate-500">{{ \Carbon\Carbon::parse($shift['created_at'])->setTimezone(config('app.timezone'))->format('d M Y H:i') }}</td>
                                 <td class="px-6 py-4 text-xs font-medium text-slate-500">
-                                    {{ $shift['closed_at'] ? \Carbon\Carbon::parse($shift['closed_at'])->format('d M Y H:i') : '—' }}
+                                    {{ $shift['closed_at'] ? \Carbon\Carbon::parse($shift['closed_at'])->setTimezone(config('app.timezone'))->format('d M Y H:i') : '—' }}
                                 </td>
                                 <td class="px-6 py-4 text-right text-xs font-bold text-slate-900 dark:text-white">Rp {{ number_format($shift['starting_cash'], 0) }}</td>
                                 <td class="px-6 py-4 text-right text-xs font-bold text-slate-900 dark:text-white">

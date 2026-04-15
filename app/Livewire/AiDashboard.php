@@ -6,53 +6,61 @@ use Livewire\Component;
 use App\Services\GeminiAiService;
 use App\Models\Transaction;
 use App\Models\Product;
+use App\Models\AiChatMessage;
 
 class AiDashboard extends Component
 {
-    public $insightsMarkdown = '';
 
     public $chatMessages = [];
     public $userMessage = '';
 
     public function mount()
     {
-        $this->chatMessages[] = [
-            'role' => 'ai', 
-            'content' => 'Hello! I am your Swiftbill AI Assistant. You can ask me to analyze sales or check stock levels. Or click **Generate Business Insights** on the left for a deep dive.'
-        ];
-    }
+        $userId = auth()->id();
+        $history = AiChatMessage::where('user_id', $userId)->orderBy('id', 'asc')->get();
 
-    public function generateInsights(GeminiAiService $aiService)
-    {
-        // Fetch last 30 days of transactions with items and products
-        $transactions = Transaction::with('items.product')
-            ->where('created_at', '>=', now()->subDays(30))
-            ->get();
+        if ($history->isEmpty()) {
+            $welcome = 'Hello! I am your Swiftbill AI Assistant. You can ask me to analyze sales or check stock levels in natural language.';
+            
+            $msg = AiChatMessage::create([
+                'user_id' => $userId,
+                'role' => 'ai',
+                'content' => $welcome
+            ]);
 
-        // Simplify data structure to save tokens
-        $simplifiedData = $transactions->map(function ($t) {
-            return [
-                'date' => $t->created_at->format('Y-m-d'),
-                'total' => $t->total_price,
-                'items' => $t->items->map(function ($i) {
-                    return [
-                        'name' => $i->product ? $i->product->name : 'Unknown',
-                        'qty' => $i->quantity
-                    ];
-                })
+            $this->chatMessages[] = [
+                'role' => 'ai', 
+                'content' => $welcome,
+                'time' => $msg->created_at->format('d M Y, H:i')
             ];
-        })->toArray();
-
-        $this->insightsMarkdown = $aiService->generateBusinessInsights($simplifiedData);
+        } else {
+            foreach ($history as $msg) {
+                $this->chatMessages[] = [
+                    'role' => $msg->role,
+                    'content' => $msg->content,
+                    'time' => $msg->created_at->format('d M Y, H:i')
+                ];
+            }
+        }
     }
+
 
     public function sendChatMessage(GeminiAiService $aiService)
     {
         $this->validate(['userMessage' => 'required|string|min:2']);
 
         $prompt = $this->userMessage;
-        $this->chatMessages[] = ['role' => 'user', 'content' => $prompt];
         $this->userMessage = '';
+        
+        $userId = auth()->id();
+
+        // 1. Save and show User Message
+        $userMsg = AiChatMessage::create([
+            'user_id' => $userId,
+            'role' => 'user',
+            'content' => $prompt
+        ]);
+        $this->chatMessages[] = ['role' => 'user', 'content' => $prompt, 'time' => $userMsg->created_at->format('d M Y, H:i')];
 
         // Context injection — rich data for AI
         $products = Product::select('name', 'stock', 'sell_price')->get()->toArray();
@@ -91,7 +99,13 @@ User's Question: " . $prompt;
 
         $response = $aiService->generateContent($fullPrompt);
 
-        $this->chatMessages[] = ['role' => 'ai', 'content' => $response];
+        // 2. Save and show AI Response
+        $aiMsg = AiChatMessage::create([
+            'user_id' => $userId,
+            'role' => 'ai',
+            'content' => $response
+        ]);
+        $this->chatMessages[] = ['role' => 'ai', 'content' => $response, 'time' => $aiMsg->created_at->format('d M Y, H:i')];
     }
 
     public function render()

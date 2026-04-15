@@ -95,7 +95,7 @@
                 </div>
             </div>
 
-            <div class="flex-grow overflow-y-auto grid grid-cols-2 md:grid-cols-4 gap-4 pr-1 pb-4">
+            <div class="flex-grow overflow-y-auto grid grid-cols-2 md:grid-cols-4 gap-4 pr-1 pb-4 content-start">
                 @forelse($products as $product)
                     <div wire:click="addToCart({{ $product->id }})" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 cursor-pointer hover:border-indigo-500 hover:shadow-lg transition-all group relative">
                         <div class="aspect-square mb-3 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden relative">

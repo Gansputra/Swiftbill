@@ -79,25 +79,4 @@ class GeminiAiService
         return "AI Service is temporarily busy. Please try again in a few minutes.";
     }
 
-    /**
-     * Pre-formulated prompt for Sales Forecasting & Market Basket Analysis
-     */
-    public function generateBusinessInsights($transactionsData)
-    {
-        $prompt = "You are a senior data scientist and retail analyst for a Point of Sale (POS) system.
-I will provide you with the last 30 days of sales data in JSON format. 
-Please analyze this data and generate a comprehensive 'Business Intelligence Report' written in Markdown format.
-
-Your report MUST include these specific sections:
-1. **Sales Forecasting**: Analyze the sales volume, revenue trends, and predict what items might need restocking soon based on their velocity. Give concrete advice, avoid vague statements.
-2. **Market Basket Analysis**: Find patterns of products that are frequently bought together (e.g. 'Customers who buy Item A often buy Item B'). Mention specific pairs or combinations.
-3. **Actionable Recommendations**: Give 3 distinct, practical tips for the store owner to increase profit next month.
-
-Format beautifully with Markdown bolding, lists, and headers (do NOT use h1 #, use h2 ## and h3 ### so it fits in my layout).
-
-Here is the JSON Sales Data:
-" . json_encode($transactionsData);
-
-        return $this->generateContent($prompt);
-    }
 }

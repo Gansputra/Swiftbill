@@ -73,7 +73,7 @@
                             <td class="px-6 py-4">
                                 <a href="{{ route('pos.receipt', $trx['invoice_number']) }}" target="_blank" class="text-xs font-bold text-indigo-600 hover:underline">{{ $trx['invoice_number'] }}</a>
                             </td>
-                            <td class="px-6 py-4 text-xs text-slate-500 font-medium">{{ \Carbon\Carbon::parse($trx['created_at'])->format('d M Y H:i') }}</td>
+                            <td class="px-6 py-4 text-xs text-slate-500 font-medium">{{ \Carbon\Carbon::parse($trx['created_at'])->setTimezone(config('app.timezone'))->format('d M Y H:i') }}</td>
                             <td class="px-6 py-4 text-xs font-bold text-slate-900 dark:text-white">{{ $trx['user']['name'] ?? '-' }}</td>
                             <td class="px-6 py-4">
                                 <div class="space-y-0.5">

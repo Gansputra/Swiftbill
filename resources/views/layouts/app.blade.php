@@ -76,45 +76,45 @@
                 
                 {{-- NAV MENU - DISESUAIKAN DENGAN web.php ABANG --}}
                 <nav class="flex-grow px-4 pb-4 space-y-1 overflow-y-auto custom-scrollbar">
-                    <x-nav-link-sidebar :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate class="flex items-center gap-2">
+                    <x-nav-link-sidebar :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="flex items-center gap-2">
                         <x-heroicon-o-home class="w-5 h-5"/> Dashboard
                     </x-nav-link-sidebar>
                     
-                    <x-nav-link-sidebar :href="route('pos.index')" :active="request()->routeIs('pos.index')" wire:navigate class="flex items-center gap-2">
+                    <x-nav-link-sidebar :href="route('pos.index')" :active="request()->routeIs('pos.index')" class="flex items-center gap-2">
                         <x-heroicon-o-shopping-cart class="w-5 h-5"/> Point of Sale
                     </x-nav-link-sidebar>
 
                     @if(auth()->user()->role === 'admin')
                         {{-- INVENTORY SECTION --}}
                         <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Inventory</div>
-                        <x-nav-link-sidebar :href="route('categories.index')" :active="request()->routeIs('categories.index')" wire:navigate class="flex items-center gap-2">
+                        <x-nav-link-sidebar :href="route('categories.index')" :active="request()->routeIs('categories.index')" class="flex items-center gap-2">
                             <x-heroicon-o-tag class="w-5 h-5"/> Categories
                         </x-nav-link-sidebar>
-                        <x-nav-link-sidebar :href="route('suppliers.index')" :active="request()->routeIs('suppliers.index')" wire:navigate class="flex items-center gap-2">
+                        <x-nav-link-sidebar :href="route('suppliers.index')" :active="request()->routeIs('suppliers.index')" class="flex items-center gap-2">
                             <x-heroicon-o-truck class="w-5 h-5"/> Suppliers
                         </x-nav-link-sidebar>
-                        <x-nav-link-sidebar :href="route('products.index')" :active="request()->routeIs('products.index')" wire:navigate class="flex items-center gap-2">
+                        <x-nav-link-sidebar :href="route('products.index')" :active="request()->routeIs('products.index')" class="flex items-center gap-2">
                             <x-heroicon-o-cube class="w-5 h-5"/> Products
                         </x-nav-link-sidebar>
-                        <x-nav-link-sidebar :href="route('stock-movements.index')" :active="request()->routeIs('stock-movements.index')" wire:navigate class="flex items-center gap-2">
+                        <x-nav-link-sidebar :href="route('stock-movements.index')" :active="request()->routeIs('stock-movements.index')" class="flex items-center gap-2">
                             <x-heroicon-o-arrows-right-left class="w-5 h-5"/> Stock Movements
                         </x-nav-link-sidebar>
 
                         {{-- ANALYTICS SECTION --}}
                         <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Analytics</div>
-                        <x-nav-link-sidebar :href="route('ai-dashboard')" :active="request()->routeIs('ai-dashboard')" wire:navigate class="flex items-center gap-2">
+                        <x-nav-link-sidebar :href="route('ai-dashboard')" :active="request()->routeIs('ai-dashboard')" class="flex items-center gap-2">
                             <x-heroicon-o-light-bulb class="w-5 h-5"/> AI Insights
                         </x-nav-link-sidebar>
-                        <x-nav-link-sidebar :href="route('reports.sales')" :active="request()->routeIs('reports.sales')" wire:navigate class="flex items-center gap-2">
+                        <x-nav-link-sidebar :href="route('reports.sales')" :active="request()->routeIs('reports.sales')" class="flex items-center gap-2">
                             <x-heroicon-o-chart-bar class="w-5 h-5"/> Sales Report
                         </x-nav-link-sidebar>
-                        <x-nav-link-sidebar :href="route('reports.shifts')" :active="request()->routeIs('reports.shifts')" wire:navigate class="flex items-center gap-2">
+                        <x-nav-link-sidebar :href="route('reports.shifts')" :active="request()->routeIs('reports.shifts')" class="flex items-center gap-2">
                             <x-heroicon-o-clock class="w-5 h-5"/> Shift Logs
                         </x-nav-link-sidebar>
 
                         {{-- ADMINISTRATION SECTION --}}
                         <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Administration</div>
-                        <x-nav-link-sidebar :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate class="flex items-center gap-2">
+                        <x-nav-link-sidebar :href="route('users.index')" :active="request()->routeIs('users.index')" class="flex items-center gap-2">
                             <x-heroicon-o-users class="w-5 h-5"/> Employees
                         </x-nav-link-sidebar>
                     @endif
