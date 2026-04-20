@@ -25,7 +25,7 @@
                 </h3>
             </div>
             
-            <div class="flex-grow overflow-y-auto p-6 space-y-6" id="chat-container">
+            <div class="flex-grow overflow-y-auto p-6 space-y-6" id="chat-container" @if($isWaiting) wire:poll.2s="loadMessages" @endif>
                 @foreach($chatMessages as $msg)
                     @if($msg['role'] === 'ai')
                         <div class="flex items-start gap-4 pr-12">
@@ -56,12 +56,7 @@
                     @endif
                 @endforeach
                 
-                <div wire:loading wire:target="sendChatMessage" class="flex items-center gap-4 pr-12 opacity-50">
-                    <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0 text-indigo-600">
-                        <svg class="w-4 h-4 animate-ping" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
-                    </div>
-                    <div class="text-xs font-bold uppercase tracking-widest text-slate-400">Gemini is thinking...</div>
-                </div>
+
             </div>
 
 

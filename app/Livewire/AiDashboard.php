@@ -15,6 +15,7 @@ class AiDashboard extends Component
 
     public $chatMessages = [];
     public $userMessage = '';
+    public $isWaiting = false;
 
     public function mount()
     {
@@ -36,6 +37,7 @@ class AiDashboard extends Component
                 'time' => $msg->created_at->format('d M Y, H:i')
             ];
         } else {
+            $this->chatMessages = [];
             foreach ($history as $msg) {
                 $this->chatMessages[] = [
                     'role' => $msg->role,
@@ -43,6 +45,28 @@ class AiDashboard extends Component
                     'time' => $msg->created_at->format('d M Y, H:i')
                 ];
             }
+        }
+    }
+
+    public function loadMessages()
+    {
+        $userId = auth()->id();
+        $history = AiChatMessage::where('user_id', $userId)->orderBy('id', 'asc')->get();
+        
+        $this->chatMessages = [];
+        foreach ($history as $msg) {
+            $this->chatMessages[] = [
+                'role' => $msg->role,
+                'content' => $msg->content,
+                'time' => $msg->created_at->format('d M Y, H:i')
+            ];
+        }
+
+        // If the last message is from AI (and it was saved by the Job), 
+        // we can stop waiting.
+        $lastMsg = $history->last();
+        if ($lastMsg && $lastMsg->role === 'ai') {
+            $this->isWaiting = false;
         }
     }
 
@@ -106,8 +130,7 @@ User's Question: " . $prompt;
         // Dispatch AI response job asynchronously
         ProcessAiResponse::dispatch($fullPrompt, $userId);
 
-        // Show loading message
-        $this->chatMessages[] = ['role' => 'ai', 'content' => 'Thinking...', 'time' => now()->format('d M Y, H:i'), 'loading' => true];
+        $this->isWaiting = true;
     }
 
     public function render()

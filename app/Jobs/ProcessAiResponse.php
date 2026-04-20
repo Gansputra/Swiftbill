@@ -34,7 +34,7 @@ class ProcessAiResponse implements ShouldQueue
         // Save AI response
         AiChatMessage::create([
             'user_id' => $this->userId,
-            'role' => 'assistant',
+            'role' => 'ai',
             'content' => $response
         ]);
     }
