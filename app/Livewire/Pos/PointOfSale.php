@@ -58,7 +58,10 @@ class PointOfSale extends Component
             ->where('payment_method', 'cash')
             ->sum('total_price');
 
-        return $this->currentShift->starting_cash + $cashSales;
+        $cashIn = $this->currentShift->cashTransactions()->where('type', 'in')->sum('amount');
+        $cashOut = $this->currentShift->cashTransactions()->where('type', 'out')->sum('amount');
+
+        return $this->currentShift->starting_cash + $cashSales + $cashIn - $cashOut;
     }
 
     public function initiateCloseShift()

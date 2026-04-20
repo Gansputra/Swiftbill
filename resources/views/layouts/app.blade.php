@@ -108,6 +108,10 @@
                         <x-heroicon-o-shopping-cart class="w-5 h-5"/> Point of Sale
                     </x-nav-link-sidebar>
 
+                    <x-nav-link-sidebar :href="route('cash-management')" :active="request()->routeIs('cash-management')" class="flex items-center gap-2">
+                        <x-heroicon-o-banknotes class="w-5 h-5"/> Cash Management
+                    </x-nav-link-sidebar>
+
                     @if(auth()->user()->role === 'admin')
                         {{-- INVENTORY SECTION --}}
                         <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Inventory</div>
@@ -180,6 +184,10 @@
                     
                     <x-nav-link-sidebar :href="route('pos.index')" :active="request()->routeIs('pos.index')" class="flex items-center gap-2">
                         <x-heroicon-o-shopping-cart class="w-5 h-5"/> Point of Sale
+                    </x-nav-link-sidebar>
+
+                    <x-nav-link-sidebar :href="route('cash-management')" :active="request()->routeIs('cash-management')" class="flex items-center gap-2">
+                        <x-heroicon-o-banknotes class="w-5 h-5"/> Cash Management
                     </x-nav-link-sidebar>
 
                     @if(auth()->user()->role === 'admin')

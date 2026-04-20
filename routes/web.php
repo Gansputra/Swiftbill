@@ -13,6 +13,7 @@ Route::middleware(['auth'])->group(function () {
     Route::view('inventory/products', 'inventory.products')->name('products.index');
     Route::view('inventory/stock-movements', 'inventory.stock-movements')->name('stock-movements.index');
     Route::view('pos', 'pos.index')->name('pos.index');
+    Route::get('cash-management', \App\Livewire\CashManagement::class)->name('cash-management');
     Route::get('pos/receipt/{invoice}', [\App\Http\Controllers\Pos\ReceiptController::class, 'show'])->name('pos.receipt');
     Route::get('ai-dashboard', \App\Livewire\AiDashboard::class)->name('ai-dashboard');
     Route::get('reports/sales', \App\Livewire\Reports\SalesReport::class)->name('reports.sales');
