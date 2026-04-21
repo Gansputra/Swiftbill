@@ -137,9 +137,12 @@
                 <table class="w-full text-left border-separate border-spacing-y-2">
                     <thead class="bg-slate-50/50 dark:bg-slate-800/50">
                         <tr>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-l-2xl">Item Info</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">In Stock</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pricing</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-l-2xl">Product</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">SKU</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Buy Price</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sell Price</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Stock</th>
                             <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right rounded-r-2xl">Actions</th>
                         </tr>
                     </thead>
@@ -148,32 +151,34 @@
                             <tr class="group">
                                 <td class="px-8 py-6 rounded-l-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20 first:border-l last:border-r">
                                     <div class="flex items-center gap-4">
-                                        <div class="h-14 w-14 rounded-2xl bg-white dark:bg-slate-800 p-1 flex-shrink-0 shadow-sm overflow-hidden border border-slate-100">
+                                        <div class="h-12 w-12 rounded-2xl bg-white dark:bg-slate-800 p-1 flex-shrink-0 shadow-sm overflow-hidden border border-slate-100 dark:border-slate-800/40">
                                             @if($product->image)
                                                 <img src="{{ asset('storage/' . $product->image) }}" class="h-full w-full object-cover rounded-xl">
                                             @else
                                                 <div class="h-full w-full flex items-center justify-center text-[8px] font-black text-slate-300">VOID</div>
                                             @endif
                                         </div>
-                                        <div>
-                                            <p class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ $product->name }}</p>
-                                            <p class="text-[9px] text-indigo-500 font-bold uppercase tracking-widest mt-1">{{ $product->sku }}</p>
-                                        </div>
+                                        <p class="text-[12px] font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ $product->name }}</p>
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
-                                    <div class="flex flex-col">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-base font-black {{ $product->stock <= $product->min_stock ? 'text-rose-500' : 'text-slate-900 dark:text-white' }} tracking-tighter">{{ number_format($product->stock,0) }}</span>
-                                            <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">Units</span>
-                                        </div>
-                                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-tighter mt-1">{{ $product->category->name }}</span>
-                                    </div>
+                                    <span class="text-[12px] font-bold text-slate-500 uppercase tracking-tighter">{{ $product->category->name }}</span>
                                 </td>
                                 <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
-                                    <div class="flex flex-col">
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase">Cost: {{ number_format($product->buy_price,0) }}</p>
-                                        <p class="text-sm font-black text-indigo-600 dark:text-indigo-400">Rp {{ number_format($product->sell_price,0) }}</p>
+                                    <span class="text-[12px] text-indigo-500 font-bold uppercase tracking-widest">{{ $product->sku }}</span>
+                                </td>
+                                <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
+                                    <span class="text-[12px] font-bold text-slate-400 uppercase tracking-tighter">Rp {{ number_format($product->buy_price,0) }}</span>
+                                </td>
+                                <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
+                                    <span class="text-[12px] font-black text-emerald-600 dark:text-emerald-400 tracking-tighter">Rp {{ number_format($product->sell_price,0) }}</span>
+                                </td>
+                                <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <span class="text-[12px] font-black {{ $product->stock <= $product->min_stock ? 'text-rose-500' : 'text-slate-900 dark:text-white' }} tracking-tighter">{{ number_format($product->stock,0) }}</span>
+                                        @if($product->stock <= $product->min_stock)
+                                            <span class="text-[8px] font-black text-rose-500 uppercase tracking-widest leading-none">Low Stock</span>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 rounded-r-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all text-right border-y border-slate-50 dark:border-slate-800/20 first:border-l last:border-r">

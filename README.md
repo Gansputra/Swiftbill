@@ -9,7 +9,7 @@ SwiftBill adalah sistem Point of Sale (POS) modern yang dirancang untuk efisiens
 - Livewire 3 & Volt
 - Alpine.js
 - Tailwind CSS
-- SQLite Database
+- MySQL Database
 - Resend Email Service
 
 ## Panduan Instalasi

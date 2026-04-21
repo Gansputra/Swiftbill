@@ -259,9 +259,9 @@
                                     class="block text-[8px] font-black text-slate-500 dark:text-white/40 uppercase tracking-widest mb-1 px-1">Instrument</label>
                                 <select wire:model.live="paymentMethod"
                                     class="w-full bg-transparent border-none p-0 text-[10px] font-black text-indigo-600 dark:text-indigo-400 focus:ring-0 uppercase tracking-widest cursor-pointer">
-                                    <option value="cash">Currency</option>
+                                    <option value="cash">Cash</option>
                                     <option value="qris">E-Wallet</option>
-                                    <option value="transfer">Bank Ledger</option>
+                                    <option value="transfer">Bank</option>
                                 </select>
                             </div>
                             <div class="p-4 bg-slate-50 dark:bg-white/5">
@@ -273,6 +273,12 @@
                             </div>
                         </div>
 
+                        @if (session()->has('error'))
+                            <div class="px-6 py-4 mb-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center animate-bounce">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+
                         <div
                             class="flex items-center justify-between px-6 py-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-200/50 dark:border-white/10">
                             <span
@@ -282,12 +288,15 @@
                                 {{ number_format($this->change, 0) }}</span>
                         </div>
 
-                        <button wire:click="checkout"
-                            class="group relative w-full py-6 bg-indigo-600 hover:bg-white text-white hover:text-indigo-950 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.4em] shadow-2xl shadow-indigo-600/30 active:scale-95 transition-all duration-500 overflow-hidden">
-                            <span class="relative z-10 flex items-center justify-center gap-3">
-                                Execute Settlement
+                        <button wire:click="checkout" wire:loading.attr="disabled"
+                            class="group relative w-full py-6 bg-indigo-600 hover:bg-white text-white hover:text-indigo-950 disabled:opacity-50 disabled:cursor-not-allowed rounded-[2rem] font-black text-[11px] uppercase tracking-[0.4em] shadow-2xl shadow-indigo-600/30 active:scale-95 transition-all duration-500 overflow-hidden">
+                            <span class="relative z-10 flex items-center justify-center gap-3" wire:loading.remove wire:target="checkout">
+                                {{ $snapToken ? 'RESUME PAYMENT' : 'PAY' }}
                                 <x-heroicon-o-arrow-right-circle
                                     class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            </span>
+                            <span class="relative z-10 flex items-center justify-center gap-3 animate-pulse" wire:loading wire:target="checkout">
+                                Processing...
                             </span>
                         </button>
                     </div>
@@ -295,4 +304,31 @@
             </div>
         </div>
     </div>
+@push('scripts')
+    <script src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('open-midtrans', (event) => {
+                const snapToken = event.snapToken;
+                window.snap.pay(snapToken, {
+                    onSuccess: function(result) {
+                        console.log('Payment success:', result);
+                        @this.finalizeTransaction(result);
+                    },
+                    onPending: function(result) {
+                        console.log('Payment pending:', result);
+                        alert('Payment is pending. Please complete the payment.');
+                    },
+                    onError: function(result) {
+                        console.log('Payment error:', result);
+                        alert('Payment failed!');
+                    },
+                    onClose: function() {
+                        console.log('Customer closed the popup without finishing the payment');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
 </div>

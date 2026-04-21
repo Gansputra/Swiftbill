@@ -16,6 +16,7 @@ class PointOfSale extends Component
     public $change = 0;
     public $paymentMethod = 'cash';
     public $customerName = 'Guest';
+    public $snapToken = null; // Store pending Midtrans token
 
     public $hasShiftError = '';
 
@@ -31,6 +32,13 @@ class PointOfSale extends Component
         $this->currentShift = \App\Models\CashShift::where('user_id', auth()->id())
             ->where('status', 'open')
             ->first();
+
+        // Load cart and token from session persistence
+        $this->cart = session()->get('pos_cart_' . auth()->id(), []);
+        $this->snapToken = session()->get('pos_snap_token_' . auth()->id(), null);
+        $this->customerName = session()->get('pos_customer_' . auth()->id(), 'Guest');
+        
+        $this->calculateTotal();
     }
 
     public function openShift()
@@ -93,6 +101,10 @@ class PointOfSale extends Component
         $this->total = 0;
         $this->totalPaid = 0;
         $this->change = 0;
+        
+        // Clear session on shift close
+        session()->forget('pos_cart_' . auth()->id());
+        session()->forget('pos_snap_token_' . auth()->id());
 
         session()->flash('success', 'Shift has been successfully closed.');
         $this->redirect(route('pos.index'), navigate: false);
@@ -140,6 +152,7 @@ class PointOfSale extends Component
             ];
         }
 
+        $this->snapToken = null;
         $this->calculateTotal();
     }
 
@@ -150,6 +163,7 @@ class PointOfSale extends Component
         } else {
             unset($this->cart[$productId]);
         }
+        $this->snapToken = null;
         $this->calculateTotal();
     }
 
@@ -164,6 +178,7 @@ class PointOfSale extends Component
                 session()->flash('error', 'Requested quantity exceeds stock.');
             }
         }
+        $this->snapToken = null;
         $this->calculateTotal();
     }
 
@@ -171,6 +186,7 @@ class PointOfSale extends Component
     {
         if (isset($this->cart[$productId])) {
             $this->cart[$productId]['discount'] = (float) $discount;
+            $this->snapToken = null;
             $this->calculateTotal();
         }
     }
@@ -191,6 +207,11 @@ class PointOfSale extends Component
         }
 
         $this->change = (float) $this->totalPaid - (float) $this->total;
+
+        // Sync with session for persistence
+        session()->put('pos_cart_' . auth()->id(), $this->cart);
+        session()->put('pos_snap_token_' . auth()->id(), $this->snapToken);
+        session()->put('pos_customer_' . auth()->id(), $this->customerName);
     }
 
     public function updated($propertyName)
@@ -217,6 +238,72 @@ class PointOfSale extends Component
             return;
         }
 
+        if ($this->paymentMethod === 'qris' || $this->paymentMethod === 'transfer') {
+            if ($this->snapToken) {
+                $this->dispatch('open-midtrans', snapToken: $this->snapToken);
+                return;
+            }
+            $this->initiateMidtransPayment();
+            return;
+        }
+
+        $this->processFinalCheckout($transactionService);
+    }
+
+    protected function initiateMidtransPayment()
+    {
+        // Set Midtrans Config
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('midtrans.is_production');
+        \Midtrans\Config::$isSanitized = config('midtrans.is_sanitized');
+        \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
+
+        $orderId = 'SB-' . time() . '-' . auth()->id();
+
+        $items = collect($this->cart)->map(fn($item) => [
+            'id' => $item['product_id'],
+            'price' => (int) $item['sell_price'],
+            'quantity' => (int) $item['quantity'],
+            'name' => substr($item['name'], 0, 50),
+        ])->values()->toArray();
+
+        // Add discount as a negative item if applicable
+        if ($this->totalDiscount > 0) {
+            $items[] = [
+                'id' => 'DISCOUNT',
+                'price' => -(int) $this->totalDiscount,
+                'quantity' => 1,
+                'name' => 'Discount/Promo',
+            ];
+        }
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => $orderId,
+                'gross_amount' => (int) $this->total,
+            ],
+            'customer_details' => [
+                'first_name' => $this->customerName,
+                'email' => auth()->user()->email,
+            ],
+            'item_details' => $items,
+        ];
+
+        try {
+            $this->snapToken = \Midtrans\Snap::getSnapToken($params);
+            $this->dispatch('open-midtrans', snapToken: $this->snapToken);
+        } catch (\Exception $e) {
+            session()->flash('error', 'Midtrans Error: ' . $e->getMessage());
+        }
+    }
+
+    public function finalizeTransaction(TransactionService $transactionService, $midtransResult = null)
+    {
+        $this->processFinalCheckout($transactionService);
+    }
+
+    protected function processFinalCheckout(TransactionService $transactionService)
+    {
         $transaction = $transactionService->createTransaction([
             'total_price' => $this->total,
             'total_discount' => $this->totalDiscount,
@@ -234,6 +321,12 @@ class PointOfSale extends Component
         $this->change = 0;
         $this->totalDiscount = 0;
         $this->customerName = 'Guest';
+        $this->snapToken = null; // Clear token on success
+
+        // Final Session Cleanup
+        session()->forget('pos_cart_' . auth()->id());
+        session()->forget('pos_snap_token_' . auth()->id());
+        session()->forget('pos_customer_' . auth()->id());
 
         $this->redirect(route('pos.receipt', $invoiceNumber), navigate: false);
     }

@@ -81,8 +81,10 @@
                 <table class="w-full text-left border-separate border-spacing-y-2">
                     <thead class="bg-slate-50/50 dark:bg-slate-800/50">
                         <tr>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-l-2xl">Identity</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Contact Info</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-l-2xl">Vendor Name</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Email Address</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Phone</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">HQ Address</th>
                             <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right rounded-r-2xl">Actions</th>
                         </tr>
                     </thead>
@@ -91,13 +93,15 @@
                             <tr class="group">
                                 <td class="px-8 py-6 rounded-l-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
                                     <p class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ $supplier->name }}</p>
-                                    <p class="text-[9px] text-slate-400 italic truncate w-48">{{ $supplier->address }}</p>
                                 </td>
                                 <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
-                                     <div class="flex flex-col gap-1">
-                                         <span class="text-[9px] font-black text-indigo-600 uppercase tracking-widest">{{ $supplier->email }}</span>
-                                         <span class="text-[9px] font-bold text-slate-400">{{ $supplier->phone }}</span>
-                                     </div>
+                                    <span class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">{{ $supplier->email ?? '-' }}</span>
+                                </td>
+                                <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
+                                    <span class="text-[14px] font-bold text-slate-500">{{ $supplier->phone ?? '-' }}</span>
+                                </td>
+                                <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
+                                    <p class="text-[14px] text-slate-400 font-medium truncate max-w-xs">{{ $supplier->address ?? '-' }}</p>
                                 </td>
                                 <td class="px-8 py-6 rounded-r-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all text-right">
                                     <div class="flex items-center justify-end gap-3 opacity-30 group-hover:opacity-100 transition-opacity">

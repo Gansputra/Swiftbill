@@ -85,7 +85,7 @@
                                     <p class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ $category->name }}</p>
                                 </td>
                                 <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
-                                    <p class="text-[10px] font-medium text-slate-500 truncate w-64 italic">{{ $category->description ?: 'No descriptive info' }}</p>
+                                    <p class="text-[12px] font-medium text-slate-500 truncate w-64 italic">{{ $category->description ?: 'No descriptive info' }}</p>
                                 </td>
                                 <td class="px-8 py-6 rounded-r-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all text-right">
                                     <div class="flex items-center justify-end gap-3 opacity-30 group-hover:opacity-100 transition-opacity">
