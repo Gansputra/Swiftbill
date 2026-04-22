@@ -260,8 +260,8 @@
                                 <select wire:model.live="paymentMethod"
                                     class="w-full bg-transparent border-none p-0 text-[10px] font-black text-indigo-600 dark:text-indigo-400 focus:ring-0 uppercase tracking-widest cursor-pointer">
                                     <option value="cash">Cash</option>
-                                    <option value="qris">E-Wallet</option>
-                                    <option value="transfer">Bank</option>
+                                    <option value="qris">QRIS</option>
+                                    <option value="transfer">Bank Transfer</option>
                                 </select>
                             </div>
                             <div class="p-4 bg-slate-50 dark:bg-white/5">

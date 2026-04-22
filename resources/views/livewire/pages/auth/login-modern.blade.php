@@ -152,15 +152,61 @@ new #[Layout('layouts.auth-split')] class extends Component {
         .remember-me {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             color: var(--text-muted);
             cursor: pointer;
+            user-select: none;
+            transition: color 0.3s ease;
+        }
+
+        .remember-me:hover {
+            color: white;
         }
 
         .remember-me input {
-            width: 16px;
-            height: 16px;
+            position: absolute;
+            opacity: 0;
             cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            height: 20px;
+            width: 20px;
+            background-color: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .remember-me:hover .checkmark {
+            border-color: var(--accent-primary);
+        }
+
+        .remember-me input:checked~.checkmark {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-color: transparent;
+            box-shadow: 0 0 10px var(--glow-color);
+        }
+
+        .checkmark::after {
+            content: "";
+            position: absolute;
+            display: none;
+            width: 6px;
+            height: 11px;
+            border: solid white;
+            border-width: 0 2.5px 2.5px 0;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+
+        .remember-me input:checked~.checkmark::after {
+            display: block;
         }
 
         .forgot-link {
@@ -394,7 +440,8 @@ new #[Layout('layouts.auth-split')] class extends Component {
 
                     <div class="remember-forgot">
                         <label class="remember-me">
-                            <input wire:model="form.remember" type="checkbox">
+                            <input wire:model="form.remember" type="checkbox" id="remember">
+                            <span class="checkmark"></span>
                             <span>Remember me</span>
                         </label>
                         <a href="{{ route('password.request') }}" class="forgot-link">Forgot password?</a>

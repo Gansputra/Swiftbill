@@ -26,7 +26,7 @@ class Overview extends Component
             ->get();
 
         // Recent Transactions
-        $recentTransactions = Transaction::with('user')->latest()->take(5)->get();
+        $recentTransactions = Transaction::with('user')->latest()->take(3)->get();
 
         // 7-day Revenue Trend Data
         $chartData = [];
