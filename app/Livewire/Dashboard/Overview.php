@@ -14,6 +14,13 @@ class Overview extends Component
     {
         $dailySalesCount = Transaction::whereDate('created_at', today())->count();
         $dailyRevenue = Transaction::whereDate('created_at', today())->sum('total_price');
+        
+        $dailyCogs = TransactionItem::whereHas('transaction', function($q) {
+            $q->whereDate('created_at', today());
+        })->sum(DB::raw('quantity * cogs'));
+        
+        $dailyProfit = $dailyRevenue - $dailyCogs;
+
         $lowStockProducts = Product::whereColumn('stock', '<=', 'min_stock')->count();
         $totalProducts = Product::count();
 
@@ -58,6 +65,7 @@ class Overview extends Component
         return view('livewire.dashboard.overview', [
             'dailySalesCount' => $dailySalesCount,
             'dailyRevenue' => $dailyRevenue,
+            'dailyProfit' => $dailyProfit,
             'lowStockProducts' => $lowStockProducts,
             'totalProducts' => $totalProducts,
             'topProducts' => $topProducts,

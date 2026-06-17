@@ -38,6 +38,7 @@ class CategoryManager extends Component
         $this->description = '';
         $this->categoryId = null;
         $this->isEditing = false;
+        $this->showForm = false;
     }
 
     public function store(CategoryService $service)
@@ -60,6 +61,7 @@ class CategoryManager extends Component
         $this->name = $category->name;
         $this->description = $category->description;
         $this->isEditing = true;
+        $this->showForm = true;
     }
 
     public function update(CategoryService $service)

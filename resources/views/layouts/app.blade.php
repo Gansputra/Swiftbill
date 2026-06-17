@@ -260,9 +260,6 @@
                     </div>
                     
                     <div class="flex items-center space-x-4">
-                        <div class="hidden sm:block relative">
-                            <input type="text" placeholder="Search data..." class="h-9 w-64 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-xs text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 placeholder-slate-400 dark:placeholder-slate-500 transition-colors duration-300">
-                        </div>
                         <livewire:layout.navigation />
                     </div>
                 </header>

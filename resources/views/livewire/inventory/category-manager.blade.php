@@ -80,7 +80,7 @@
                     </thead>
                     <tbody class="divide-y divide-slate-50 dark:divide-slate-800/20">
                         @forelse($categories as $category)
-                            <tr class="group">
+                            <tr class="group" wire:key="category-{{ $category->id }}">
                                 <td class="px-8 py-6 rounded-l-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
                                     <p class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ $category->name }}</p>
                                 </td>

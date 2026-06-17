@@ -5,14 +5,19 @@
 
     <div class="h-full flex flex-col space-y-6">
         <div class="flex items-center justify-between">
-        <div>
-            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                AI Assistant Dashboard
-            </h2>
-            <p class="text-xs text-slate-500 uppercase tracking-widest font-bold mt-1">Smart Business Intelligence powered by Gemini</p>
+            <div>
+                <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                    <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    AI Assistant Dashboard
+                </h2>
+                <p class="text-xs text-slate-500 uppercase tracking-widest font-bold mt-1">Smart Business Intelligence powered by Gemini</p>
+            </div>
+            
+            <button wire:click="clearChat" wire:confirm="Hapus seluruh riwayat chat AI?" class="px-5 py-2.5 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-500 text-rose-600 dark:text-rose-400 hover:text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-sm flex items-center gap-2">
+                <x-heroicon-o-trash class="w-4 h-4" />
+                Clear Chat
+            </button>
         </div>
-    </div>
 
     <div class="flex-grow flex flex-col overflow-hidden h-[calc(100vh-140px)] w-full max-w-4xl mx-auto">
         
@@ -72,7 +77,7 @@
                         @error('userMessage') <span class="absolute -top-5 left-2 text-[10px] text-rose-500 font-bold">{{ $message }}</span> @enderror
                     </div>
                     <button type="submit" wire:loading.attr="disabled" class="p-4 bg-indigo-600 hover:bg-slate-900 text-white rounded-2xl shadow-lg shadow-indigo-100 dark:shadow-none transition disabled:opacity-50 flex-shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        <svg class="w-5 h-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                     </button>
                 </form>
             </div>

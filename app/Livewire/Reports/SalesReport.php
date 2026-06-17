@@ -38,22 +38,27 @@ class SalesReport extends Component
             ->whereDate('created_at', '<=', $this->dateTo)
             ->latest();
 
-        // Calculate Totals in single query
-        $totals = Transaction::selectRaw('
+        // Calculate Transaction totals without duplication from join
+        $transactionTotals = Transaction::selectRaw('
             COUNT(*) as total_transactions,
             SUM(total_price) as total_revenue,
             SUM(total_discount) as total_discount
         ')
-            ->join('transaction_items', 'transactions.id', '=', 'transaction_items.transaction_id')
-            ->selectRaw('SUM(transaction_items.quantity * transaction_items.cogs) as total_cogs')
-            ->whereDate('transactions.created_at', '>=', $this->dateFrom)
-            ->whereDate('transactions.created_at', '<=', $this->dateTo)
+            ->whereDate('created_at', '>=', $this->dateFrom)
+            ->whereDate('created_at', '<=', $this->dateTo)
             ->first();
 
-        $this->totalRevenue = (float) ($totals->total_revenue ?? 0);
-        $this->totalDiscount = (float) ($totals->total_discount ?? 0);
-        $this->totalTransactions = (int) ($totals->total_transactions ?? 0);
-        $this->totalProfit = $this->totalRevenue - ($totals->total_cogs ?? 0);
+        // Calculate COGS separately using join
+        $totalCogs = \DB::table('transaction_items')
+            ->join('transactions', 'transaction_items.transaction_id', '=', 'transactions.id')
+            ->whereDate('transactions.created_at', '>=', $this->dateFrom)
+            ->whereDate('transactions.created_at', '<=', $this->dateTo)
+            ->sum(\DB::raw('transaction_items.quantity * transaction_items.cogs'));
+
+        $this->totalRevenue = (float) ($transactionTotals->total_revenue ?? 0);
+        $this->totalDiscount = (float) ($transactionTotals->total_discount ?? 0);
+        $this->totalTransactions = (int) ($transactionTotals->total_transactions ?? 0);
+        $this->totalProfit = $this->totalRevenue - $totalCogs;
 
         return view('livewire.reports.sales-report', [
             'transactions' => $query->paginate(15)

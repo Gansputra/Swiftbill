@@ -54,7 +54,7 @@
                     <div class="space-y-8">
                         <div class="group">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Product Descriptor</label>
-                            <input type="text" wire:model="name" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-xs font-bold py-4 px-6 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none">
+                            <input type="text" wire:model.live="name" class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-xs font-bold py-4 px-6 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none">
                             @error('name') <span class="text-[10px] text-rose-500 font-bold mt-2 inline-block px-1">{{ $message }}</span> @enderror
                         </div>
 
@@ -112,6 +112,30 @@
                         <div class="group">
                             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Visual Asset</label>
                             <input type="file" wire:model="image" class="block w-full text-[10px] text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:bg-indigo-600 file:text-white hover:file:bg-slate-900 file:transition-all cursor-pointer">
+                            <div wire:loading wire:target="image" class="text-[9px] text-indigo-500 font-black uppercase tracking-widest mt-2 block animate-pulse">
+                                Uploading Image...
+                            </div>
+                            
+                            @if ($image)
+                                <div class="mt-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/50 inline-block">
+                                    <span class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Image Preview</span>
+                                    <div class="h-24 w-24 rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700">
+                                        <img src="{{ $image->temporaryUrl() }}" class="h-full w-full object-cover">
+                                    </div>
+                                </div>
+                            @elseif ($isEditing && $productId)
+                                @php
+                                    $currentProduct = \App\Models\Product::find($productId);
+                                @endphp
+                                @if ($currentProduct && $currentProduct->image)
+                                    <div class="mt-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/50 inline-block">
+                                        <span class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Current Image</span>
+                                        <div class="h-24 w-24 rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700">
+                                            <img src="{{ asset('storage/' . $currentProduct->image) }}" class="h-full w-full object-cover">
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -148,7 +172,7 @@
                     </thead>
                     <tbody class="divide-y divide-slate-50 dark:divide-slate-800/20">
                         @forelse($products as $product)
-                            <tr class="group">
+                            <tr class="group" wire:key="product-{{ $product->id }}">
                                 <td class="px-8 py-6 rounded-l-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20 first:border-l last:border-r">
                                     <div class="flex items-center gap-4">
                                         <div class="h-12 w-12 rounded-2xl bg-white dark:bg-slate-800 p-1 flex-shrink-0 shadow-sm overflow-hidden border border-slate-100 dark:border-slate-800/40">
@@ -194,7 +218,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-8 py-40 text-center grayscale opacity-30">
+                                <td colspan="7" class="px-8 py-40 text-center grayscale opacity-30">
                                     <x-heroicon-o-cube-transparent class="w-12 h-12 mx-auto text-slate-300 mb-4" />
                                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Empty Inventory State</p>
                                 </td>

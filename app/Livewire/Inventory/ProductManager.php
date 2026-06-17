@@ -15,7 +15,7 @@ class ProductManager extends Component
 {
     use WithPagination, WithFileUploads;
 
-    public $name, $sku, $description, $category_id, $supplier_id, $buy_price, $sell_price, $stock, $min_stock, $productId;
+    public $name, $sku, $description, $category_id, $supplier_id, $buy_price, $sell_price, $stock, $min_stock, $productId, $skuSuffix;
     public $image;
     public $isEditing = false;
     public $showForm = false;
@@ -79,6 +79,61 @@ class ProductManager extends Component
         $this->image = null;
         $this->productId = null;
         $this->isEditing = false;
+        $this->showForm = false;
+        $this->skuSuffix = null;
+    }
+
+    public function updatedName($value)
+    {
+        if (!$this->isEditing) {
+            $this->sku = $this->generateSku($value);
+        }
+    }
+
+    private function generateSku($name)
+    {
+        if (empty($name)) {
+            return '';
+        }
+
+        // Split name into words, clean them to be uppercase alphanumeric
+        $rawWords = preg_split('/\s+/', trim($name));
+        $words = [];
+        foreach ($rawWords as $word) {
+            $cleanWord = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $word));
+            if (!empty($cleanWord)) {
+                $words[] = $cleanWord;
+            }
+        }
+
+        $initials = '';
+        $wordCount = count($words);
+
+        if ($wordCount >= 3) {
+            // Take first letter of the first 3 words (e.g. Susu Kental Manis -> SKM)
+            $initials = substr($words[0], 0, 1) . substr($words[1], 0, 1) . substr($words[2], 0, 1);
+        } elseif ($wordCount === 2) {
+            // Take first 2 letters of first word + first letter of second word (e.g. Bakso Bakar -> BAB)
+            $initials = substr($words[0], 0, 2) . substr($words[1], 0, 1);
+        } elseif ($wordCount === 1) {
+            // Take first 3 letters of the single word (e.g. Bakso -> BAK)
+            $initials = substr($words[0], 0, 3);
+        }
+
+        // Final cleanup & fallback
+        $initials = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $initials));
+        if (empty($initials)) {
+            $initials = 'PROD';
+        }
+
+        // Ensure initials is padded to at least 3 chars if somehow shorter
+        $initials = str_pad($initials, 3, 'X');
+
+        if (!$this->skuSuffix) {
+            $this->skuSuffix = rand(1000, 9999);
+        }
+
+        return $initials . '-' . $this->skuSuffix;
     }
 
     public function store(ProductService $service)

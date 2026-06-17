@@ -40,15 +40,14 @@
             <div class="relative mt-8">
                 <div class="flex items-end gap-2 text-white/90">
                     <div class="flex-1">
-                        <p class="text-sm font-medium opacity-80">Previous period performance</p>
-                        <p class="text-lg font-bold">+12.5% <span class="text-xs font-normal opacity-70">than
-                                yesterday</span></p>
+                        <p class="text-sm font-medium opacity-80">Estimasi Laba Hari Ini</p>
+                        <p class="text-lg font-black">Rp {{ number_format($dailyProfit, 0, ',', '.') }}</p>
                     </div>
                     <div class="h-16 w-24 flex items-end gap-1 pb-1">
                         <div class="bg-white/20 w-3 h-1/2 rounded-full"></div>
                         <div class="bg-white/30 w-3 h-2/3 rounded-full border border-white/40"></div>
                         <div class="bg-white/50 w-3 h-5/6 rounded-full"></div>
-                        <div class="bg-white w-3 h-full rounded-full"></div>
+                        <div class="bg-white w-3 h-full rounded-full animate-pulse"></div>
                     </div>
                 </div>
             </div>

@@ -94,7 +94,7 @@
                     </thead>
                     <tbody class="divide-y divide-slate-50 dark:divide-slate-800/20">
                         @forelse($movements as $movement)
-                            <tr class="group">
+                            <tr class="group" wire:key="movement-{{ $movement->id }}">
                                 <td class="px-8 py-6 rounded-l-2xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all">
                                     <p class="text-[10px] font-black text-slate-900 dark:text-white">{{ $movement->created_at->format('d M, H:i') }}</p>
                                     <span class="px-2 py-0.5 mt-1 inline-block rounded text-[8px] font-black uppercase tracking-widest {{ in_array($movement->type, ['purchase', 'opname_add']) ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600' }}">

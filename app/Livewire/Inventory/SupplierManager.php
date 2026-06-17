@@ -42,6 +42,7 @@ class SupplierManager extends Component
         $this->address = '';
         $this->supplierId = null;
         $this->isEditing = false;
+        $this->showForm = false;
     }
 
     public function store(SupplierService $service)
@@ -68,6 +69,7 @@ class SupplierManager extends Component
         $this->phone = $supplier->phone;
         $this->address = $supplier->address;
         $this->isEditing = true;
+        $this->showForm = true;
     }
 
     public function update(SupplierService $service)

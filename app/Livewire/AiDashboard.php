@@ -88,12 +88,25 @@ class AiDashboard extends Component
         ]);
         $this->chatMessages[] = ['role' => 'user', 'content' => $prompt, 'time' => $userMsg->created_at->format('d M Y, H:i')];
 
-        // Context injection — rich data for AI
-        $products = Product::select('name', 'stock', 'sell_price')
-            ->orderBy(DB::raw('stock * sell_price'), 'desc')
+        // 1. Context injection — rich products data (with 7-day sales and min_stock levels)
+        $products = Product::leftJoin('transaction_items', 'products.id', '=', 'transaction_items.product_id')
+            ->leftJoin('transactions', function ($join) {
+                $join->on('transaction_items.transaction_id', '=', 'transactions.id')
+                    ->where('transactions.created_at', '>=', now()->subDays(7));
+            })
+            ->select(
+                'products.name',
+                'products.stock',
+                'products.min_stock',
+                'products.sell_price',
+                DB::raw('COALESCE(SUM(CASE WHEN transactions.id IS NOT NULL THEN transaction_items.quantity ELSE 0 END), 0) as sold_last_7_days')
+            )
+            ->groupBy('products.id', 'products.name', 'products.stock', 'products.min_stock', 'products.sell_price')
+            ->orderBy(DB::raw('products.stock * products.sell_price'), 'desc')
             ->limit(50)
             ->get()
             ->toArray();
+
         $todaySales = Transaction::whereDate('created_at', today())->sum('total_price');
 
         // Top selling products (last 30 days)
@@ -109,21 +122,30 @@ class AiDashboard extends Component
             ->map(fn($i) => ['name' => $i->product->name ?? 'Unknown', 'sold' => $i->total_sold])
             ->toArray();
 
-        // Average daily revenue (last 30 days)
-        $avgRevenue = Transaction::where('created_at', '>=', now()->subDays(30))
-            ->selectRaw('DATE(created_at) as date, SUM(total_price) as daily_total')
-            ->groupBy('date')
-            ->get()
-            ->avg('daily_total') ?? 0;
+        // Calculate average daily revenue dynamically based on actual days since start (up to 30 days)
+        $firstTransaction = Transaction::oldest()->first();
+        $daysRange = 30;
+        if ($firstTransaction) {
+            $daysSinceStart = $firstTransaction->created_at->diffInDays(now()) + 1;
+            $daysRange = min(30, max(1, $daysSinceStart));
+        }
+        $total30DayRevenue = Transaction::where('created_at', '>=', now()->subDays($daysRange - 1)->startOfDay())->sum('total_price');
+        $avgRevenue = $total30DayRevenue / $daysRange;
 
         $fullPrompt = "You are an AI assistant for a Point of Sale system named Swiftbill. 
-Answer concisely and cleanly. Use Markdown formatting.
+Answer concisely and cleanly. Use Markdown formatting. Always reply in the same language as the user (Indonesian if they ask in Indonesian, English if in English).
 
 Context about the current database:
-- Today's Sales Revenue: Rp. {$todaySales}
-- Average Daily Revenue (30 days): Rp. " . number_format($avgRevenue, 0) . "
+- Today's Sales Revenue: Rp. " . number_format($todaySales, 0, ',', '.') . "
+- Average Daily Revenue (over the last {$daysRange} days since store start): Rp. " . number_format($avgRevenue, 0, ',', '.') . "
 - Top Selling Products (last 30 days, by quantity): " . json_encode($topSelling) . "
-- Current Stock Levels: " . json_encode($products) . "
+- Current Stock Levels (includes name, stock, min_stock, sell_price, and units sold in the last 7 days): " . json_encode($products) . "
+
+Guidelines for answering stock sufficiency:
+- For questions about whether stock is sufficient for next week, compare 'stock' with 'sold_last_7_days'.
+- If the current 'stock' of a product is less than 'sold_last_7_days', warn the user that the stock is INSUFFICIENT for next week.
+- If 'stock' is close to or below 'min_stock', suggest restocking it.
+- Estimate how many days the remaining stock will last based on the weekly sales rate ('sold_last_7_days').
 
 User's Question: " . $prompt;
 
@@ -131,6 +153,19 @@ User's Question: " . $prompt;
         ProcessAiResponse::dispatch($fullPrompt, $userId);
 
         $this->isWaiting = true;
+    }
+
+    public function clearChat()
+    {
+        $userId = auth()->id();
+        AiChatMessage::where('user_id', $userId)->delete();
+        $this->chatMessages = [];
+        $this->isWaiting = false;
+
+        // Re-initialize greeting message
+        $this->mount();
+
+        session()->flash('success', 'Chat history cleared.');
     }
 
     public function render()
