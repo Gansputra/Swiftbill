@@ -67,6 +67,7 @@
         <link rel="manifest" href="{{ asset('manifest.json') }}">
         <meta name="theme-color" content="#4f46e5">
         <link rel="apple-touch-icon" href="{{ asset('icon-192x192.png') }}">
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=2">
         
         <!-- ApexCharts -->
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
