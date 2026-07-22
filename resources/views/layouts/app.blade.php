@@ -297,7 +297,18 @@
                         </div>
                     </div>
                     
-                    <div class="flex items-center space-x-4 flex-shrink-0">
+                    <div class="flex items-center space-x-3 md:space-x-4 flex-shrink-0">
+                        <!-- Spotlight Quick Search Trigger -->
+                        <button @click="$dispatch('open-command-palette')"
+                                class="hidden sm:flex items-center gap-3 px-4 py-2 bg-slate-100/80 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 hover:border-indigo-500 dark:hover:border-indigo-500 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-2xl transition-all duration-300 shadow-sm group">
+                            <x-heroicon-o-magnifying-glass class="w-4 h-4 text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
+                            <span class="text-xs font-medium pr-2">Cari cepat...</span>
+                            <kbd class="px-2 py-0.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[10px] font-semibold text-slate-500 dark:text-slate-400">Ctrl K</kbd>
+                        </button>
+                        <button @click="$dispatch('open-command-palette')" class="sm:hidden p-2.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-xl hover:text-indigo-600">
+                            <x-heroicon-o-magnifying-glass class="w-5 h-5" />
+                        </button>
+
                         <livewire:layout.navigation />
                     </div>
                 </header>
@@ -307,6 +318,31 @@
                 </main>
             </div>
         </div>
+        <!-- Ambient Keyboard Shortcut Floating Banner -->
+        <div x-data="{ showHint: !localStorage.getItem('hide-ctrlk-hint') }"
+             x-show="showHint"
+             x-transition:enter="transition ease-out duration-500"
+             x-transition:enter-start="opacity-0 translate-y-8 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+             x-transition:leave-end="opacity-0 translate-y-8 scale-95"
+             x-init="setTimeout(() => { showHint = false; }, 9000)"
+             class="fixed bottom-6 right-6 z-[90] hidden md:flex items-center gap-3 p-4 bg-slate-900/90 dark:bg-slate-800/90 text-white rounded-2xl shadow-2xl backdrop-blur-xl border border-slate-700/80"
+             x-cloak>
+            <div class="p-2 bg-indigo-600/30 text-indigo-400 rounded-xl">
+                <x-heroicon-o-sparkles class="w-5 h-5 animate-pulse" />
+            </div>
+            <div class="text-xs">
+                <p class="font-bold">Pencarian Pintar & Navigasi Cepat</p>
+                <p class="text-slate-400 text-[11px] mt-0.5">Tekan <kbd class="px-1.5 py-0.5 bg-indigo-600 text-white font-mono text-[10px] rounded font-bold">Ctrl + K</kbd> kapan saja untuk mencari produk & menu.</p>
+            </div>
+            <button @click="showHint = false; localStorage.setItem('hide-ctrlk-hint', 'true')" class="ml-2 text-slate-400 hover:text-white transition p-1 rounded-lg">
+                <x-heroicon-o-x-mark class="w-4 h-4" />
+            </button>
+        </div>
+
+        <livewire:command-palette />
         @stack('scripts')
     </body>
 </html>

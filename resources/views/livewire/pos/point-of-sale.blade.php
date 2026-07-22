@@ -106,11 +106,14 @@
             <!-- Box 1: Search & Filter Bento -->
             <div
                 class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] p-4 flex items-center gap-4 shadow-sm group">
-                <div class="flex-grow relative">
+                <div class="flex-grow relative flex items-center">
                     <x-heroicon-o-magnifying-glass
                         class="w-5 h-5 absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
                     <input type="text" wire:model.live="searchTerm" placeholder="Pindai SKU atau cari produk..."
-                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-[1.8rem] text-sm font-bold py-4 pl-14 pr-6 focus:ring-4 focus:ring-indigo-500/10 placeholder-slate-300 transition-all">
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-[1.8rem] text-sm font-bold py-4 pl-14 pr-24 focus:ring-4 focus:ring-indigo-500/10 placeholder-slate-300 transition-all">
+                    <button @click="$dispatch('open-command-palette')" type="button" class="absolute right-4 hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-[10px] font-bold text-slate-400 hover:text-indigo-600 transition shadow-xs">
+                        <kbd class="font-mono text-indigo-600 dark:text-indigo-400">Ctrl K</kbd>
+                    </button>
                 </div>
                 <div
                     class="hidden md:flex items-center gap-2 px-6 py-4 border-l border-slate-100 dark:border-slate-800">
