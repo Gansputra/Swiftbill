@@ -5,15 +5,15 @@
         <div class="absolute -right-20 -top-20 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-[100px] pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
 
         <div class="relative z-10">
-            <h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">Revenue Analytics</h2>
-            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em] mt-1">Enterprise Performance Audit</p>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Analisis Penjualan</h2>
+            <p class="text-xs text-slate-500 font-medium mt-1">Laporan Performa Penjualan</p>
         </div>
         
         <div class="flex flex-wrap items-center gap-3 relative z-10">
             <div class="flex items-center bg-slate-50 dark:bg-slate-800 rounded-2xl p-1 border border-slate-100 dark:border-slate-800">
-                <input type="date" wire:model.live="dateFrom" class="bg-transparent border-none text-[10px] font-black uppercase tracking-widest py-2 px-4 focus:ring-0">
-                <span class="text-slate-300 font-black">/</span>
-                <input type="date" wire:model.live="dateTo" class="bg-transparent border-none text-[10px] font-black uppercase tracking-widest py-2 px-4 focus:ring-0">
+                <input type="date" wire:model.live="dateFrom" class="bg-transparent border-none text-xs font-semibold py-2 px-4 focus:ring-0">
+                <span class="text-slate-300 font-bold">/</span>
+                <input type="date" wire:model.live="dateTo" class="bg-transparent border-none text-xs font-semibold py-2 px-4 focus:ring-0">
             </div>
             
             <div class="flex items-center gap-2">
@@ -34,45 +34,45 @@
             <div class="absolute right-0 top-0 p-8 opacity-10">
                 <x-heroicon-o-presentation-chart-line class="w-16 h-16" />
             </div>
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Gross Intake</span>
+            <span class="text-xs font-semibold opacity-80">Total Pendapatan Kotor</span>
             <div class="mt-6">
                 <p class="text-3xl font-black tracking-tighter">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
                 <div class="flex items-center gap-2 mt-2 opacity-60">
                     <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                    <span class="text-[9px] font-bold uppercase">Total Invoiced</span>
+                    <span class="text-xs font-medium">Total Faktur Penjualan</span>
                 </div>
             </div>
         </div>
 
         <!-- Profit Bento -->
         <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 rounded-[2.5rem] shadow-sm">
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Net Estimation</span>
+            <span class="text-xs font-semibold text-slate-400">Estimasi Laba Bersih</span>
             <div class="mt-6 flex flex-col justify-between">
                 <p class="text-2xl font-black {{ $totalProfit >= 0 ? 'text-emerald-500' : 'text-rose-500' }} tracking-tighter">
                    {{ $totalProfit < 0 ? '-' : '' }}Rp {{ number_format(abs($totalProfit), 0, ',', '.') }}
                 </p>
-                <span class="text-[10px] font-bold text-slate-400 uppercase mt-2 tracking-tighter">Operating Margin</span>
+                <span class="text-xs font-medium text-slate-400 mt-2">Margin Operasional</span>
             </div>
         </div>
 
         <!-- Transactions Bento -->
         <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 rounded-[2.5rem] shadow-sm">
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Volume</span>
+            <span class="text-xs font-semibold text-slate-400">Jumlah Transaksi</span>
             <div class="mt-6">
                 <p class="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">{{ number_format($totalTransactions, 0) }}</p>
                 <div class="flex items-center gap-1 mt-1">
-                    <span class="text-[9px] font-bold text-indigo-500 uppercase">Settled Orders</span>
+                    <span class="text-xs font-medium text-indigo-500">Transaksi Selesai</span>
                 </div>
             </div>
         </div>
 
         <!-- Discounts Bento -->
         <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-8 rounded-[2.5rem] shadow-sm">
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Yield Buffer</span>
+            <span class="text-xs font-semibold text-slate-400">Total Diskon</span>
             <div class="mt-6">
                 <p class="text-3xl font-black text-rose-500 tracking-tighter">Rp {{ number_format($totalDiscount, 0, ',', '.') }}</p>
                 <div class="flex items-center gap-1 mt-1">
-                    <span class="text-[9px] font-bold text-slate-400 uppercase">Applied Discounts</span>
+                    <span class="text-xs font-medium text-slate-400">Diskon Terpakai</span>
                 </div>
             </div>
         </div>
@@ -81,64 +81,64 @@
     <!-- Main Transaction Bento Table -->
     <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[3rem] shadow-sm overflow-hidden text-sm relative">
         <div class="p-8 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between bg-slate-50/30 dark:bg-slate-900/30">
-            <h3 class="text-lg font-black text-slate-900 dark:text-white tracking-tighter uppercase">Audit Trail</h3>
-            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest border border-slate-200 dark:border-slate-800 px-3 py-1 rounded-full italic">Daily Audit</span>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Riwayat Transaksi</h3>
+            <span class="text-xs font-medium text-slate-400 border border-slate-200 dark:border-slate-800 px-3 py-1 rounded-full italic">Audit Harian</span>
         </div>
 
         <div class="overflow-x-auto p-4 pb-0">
             <table class="w-full text-left border-separate border-spacing-y-2">
                 <thead class="bg-slate-50/50 dark:bg-slate-800/50">
                     <tr>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-l-2xl">TX Reference</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Timestamp</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Account</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Manifest</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right rounded-r-2xl">Settlement</th>
+                        <th class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400 rounded-l-2xl">No. Faktur</th>
+                        <th class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400">Waktu</th>
+                        <th class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400">Kasir</th>
+                        <th class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400">Daftar Produk</th>
+                        <th class="px-8 py-5 text-xs font-semibold text-slate-500 dark:text-slate-400 text-right rounded-r-2xl">Total Bayar</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50 dark:divide-slate-800/10">
                     @forelse($transactions as $trx)
                         <tr class="group">
                             <td class="px-8 py-6 rounded-l-3xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
-                                <a href="{{ route('pos.receipt', $trx->invoice_number) }}" target="_blank" class="text-xs font-black text-slate-900 dark:text-white hover:text-indigo-600 transition-colors uppercase tracking-widest border-b border-transparent hover:border-indigo-600">
+                                <a href="{{ route('pos.receipt', $trx->invoice_number) }}" target="_blank" class="text-xs font-bold text-slate-900 dark:text-white hover:text-indigo-600 transition-colors border-b border-transparent hover:border-indigo-600">
                                     #{{ $trx->invoice_number }}
                                 </a>
                             </td>
                             <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] font-black text-slate-900 dark:text-white uppercase">{{ $trx->created_at->format('d M Y') }}</span>
-                                    <span class="text-[9px] text-slate-400 font-bold mt-0.5 tracking-widest">{{ $trx->created_at->format('H:i:s') }}</span>
+                                    <span class="text-xs font-semibold text-slate-900 dark:text-white">{{ $trx->created_at->format('d M Y') }}</span>
+                                    <span class="text-xs text-slate-400 font-normal mt-0.5">{{ $trx->created_at->format('H:i:s') }}</span>
                                 </div>
                             </td>
-                            <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20 text-[10px] font-black text-slate-700 dark:text-white uppercase">
-                                {{ $trx->user->name ?? 'System' }}
+                            <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20 text-xs font-semibold text-slate-700 dark:text-white">
+                                {{ $trx->user->name ?? 'Sistem' }}
                             </td>
                             <td class="px-8 py-6 group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20">
                                 <div class="flex flex-wrap gap-1">
                                     @foreach($trx->items as $item)
-                                        <span class="px-2 py-0.5 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded text-[8px] font-black text-slate-500">
-                                            {{ $item->product->name ?? 'Item' }} ({{ $item->quantity }})
+                                        <span class="px-2 py-0.5 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded text-xs font-medium text-slate-500">
+                                            {{ $item->product->name ?? 'Produk' }} ({{ $item->quantity }})
                                         </span>
                                     @endforeach
                                 </div>
                             </td>
-                            <td class="px-8 py-6 rounded-r-3xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all text-right border-y border-slate-50 dark:border-slate-800/20 text-sm font-black text-slate-900 dark:text-white tracking-tighter">
-                                Rp {{ number_format($trx->total_price, 0, ',', '.') }}
-                                <span class="text-[8px] block font-black text-slate-400 uppercase italic">{{ $trx->payment_method }}</span>
+                            <td class="px-8 py-6 rounded-r-3xl group-hover:bg-slate-50/50 dark:group-hover:bg-slate-800/30 transition-all border-y border-slate-50 dark:border-slate-800/20 text-right">
+                                <p class="text-xs font-black text-indigo-600 dark:text-indigo-400">Rp {{ number_format($trx->total_price, 0, ',', '.') }}</p>
+                                <span class="text-xs font-medium text-slate-400">{{ $trx->payment_method }}</span>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="5" class="px-8 py-32 text-center grayscale opacity-30">
-                                <x-heroicon-o-no-symbol class="w-12 h-12 mx-auto text-slate-300 mb-4" />
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Zero Transaction Context</p>
+                                <x-heroicon-o-chart-bar class="w-12 h-12 mx-auto text-slate-300 mb-4" />
+                                <p class="text-xs font-medium text-slate-400">Belum Ada Transaksi Tercatat</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        <div class="px-8 py-4 border-t border-slate-50 dark:border-slate-800">
+        <div class="p-8 border-t border-slate-50 dark:border-slate-800">
              {{ $transactions->links() }}
         </div>
     </div>

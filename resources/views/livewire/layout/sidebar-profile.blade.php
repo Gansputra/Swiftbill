@@ -35,6 +35,6 @@ new class extends Component
     
     <div class="flex-grow min-w-0 text-left">
         <p class="text-sm font-semibold truncate dark:text-white" x-text="$wire.userName"></p>
-        <p class="text-[10px] text-slate-400 uppercase font-bold" x-text="$wire.userRole"></p>
+        <p class="text-xs text-slate-400 font-medium capitalize" x-text="$wire.userRole"></p>
     </div>
 </div>

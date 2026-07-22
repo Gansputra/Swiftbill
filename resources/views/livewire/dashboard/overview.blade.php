@@ -3,13 +3,13 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Dashboard</h1>
-            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Business performance at a glance.</p>
+            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Ringkasan performa bisnis Anda.</p>
         </div>
         <div class="flex items-center gap-3">
             <div
                 class="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center">
                 <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                Live System
+                Sistem Aktif
             </div>
         </div>
     </div>
@@ -30,7 +30,7 @@
                     <div class="p-2 bg-white/20 rounded-xl">
                         <x-heroicon-o-presentation-chart-line class="w-5 h-5 text-white" />
                     </div>
-                    <span class="text-white/80 text-xs font-bold uppercase tracking-widest">Total Revenue Today</span>
+                    <span class="text-white/80 text-xs font-bold">Total Pendapatan Hari Ini</span>
                 </div>
                 <h2 class="text-4xl md:text-5xl font-black text-white tracking-tighter">
                     Rp {{ number_format($dailyRevenue, 0, ',', '.') }}
@@ -59,7 +59,7 @@
                 initChart() {
                         let options = {
                             series: [{
-                                name: 'Revenue',
+                                name: 'Pendapatan',
                                 data: {{ json_encode($revenueChartData) }}
                             }],
                             chart: {
@@ -67,7 +67,7 @@
                                 height: '100%',
                                 toolbar: { show: false },
                                 sparkline: { enabled: true },
-                                fontFamily: 'Outfit, sans-serif'
+                                fontFamily: 'Plus Jakarta Sans, sans-serif'
                             },
                             stroke: {
                                 curve: 'smooth',
@@ -112,13 +112,12 @@
             <div class="flex items-center justify-between relative z-10 mb-2">
                 <div>
                     <span
-                        class="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1 block">Revenue
-                        Pulse</span>
-                    <h3 class="text-2xl font-black text-slate-900 dark:text-white">Active Growth</h3>
+                        class="text-slate-400 dark:text-slate-500 text-xs font-semibold mb-1 block">Grafik Pendapatan</span>
+                    <h3 class="text-2xl font-black text-slate-900 dark:text-white">Pertumbuhan Penjualan</h3>
                 </div>
                 <div class="text-right">
-                    <p class="text-[10px] font-black text-indigo-500 uppercase">Last 7 Days</p>
-                    <p class="text-xs font-bold text-slate-400">Trend Analysis</p>
+                    <p class="text-xs font-semibold text-indigo-500">7 Hari Terakhir</p>
+                    <p class="text-xs font-bold text-slate-400">Analisis Tren</p>
                 </div>
             </div>
 
@@ -141,27 +140,27 @@
                             <x-heroicon-o-check-badge class="w-5 h-5" />
                         @endif
                     </div>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Inventory</span>
+                    <span class="text-xs font-semibold text-slate-400">Inventaris</span>
                 </div>
                 <p
                     class="text-2xl font-black {{ $lowStockProducts > 0 ? 'text-rose-600' : 'text-slate-900 dark:text-white' }} mt-1">
-                    {{ $lowStockProducts }} <span class="text-xs font-bold text-slate-400">Low Items</span>
+                    {{ $lowStockProducts }} <span class="text-xs font-bold text-slate-400">Stok Sedikit</span>
                 </p>
             </div>
             <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
-                <span class="text-[10px] text-slate-400 font-bold">Health Scan</span>
+                <span class="text-[10px] text-slate-400 font-bold">Status Stok</span>
                 <span
-                    class="text-[10px] font-black {{ $lowStockProducts > 10 ? 'text-rose-500' : 'text-emerald-500' }} uppercase tracking-tighter">{{ $lowStockProducts > 10 ? 'Critical' : 'Stable' }}</span>
+                    class="text-xs font-bold {{ $lowStockProducts > 10 ? 'text-rose-500' : 'text-emerald-500' }}">{{ $lowStockProducts > 10 ? 'Kritis' : 'Stabil' }}</span>
             </div>
         </div>
 
         <!-- 4. Total SKU (Small Bento - 1 col, 1 row) -->
         <div
             class="bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 shadow-sm">
-            <h4 class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Product SKU</h4>
+            <h4 class="text-slate-400 text-xs font-semibold">SKU Produk</h4>
             <div class="flex items-baseline gap-1 mt-2">
                 <span class="text-3xl font-black text-slate-900 dark:text-white">{{ $totalProducts }}</span>
-                <span class="text-[10px] font-bold text-slate-400">Items</span>
+                <span class="text-xs font-bold text-slate-400">Item</span>
             </div>
             <div class="mt-3 flex -space-x-2">
                 @for ($i = 0; $i < 4; $i++)
@@ -177,9 +176,9 @@
             class="md:col-span-2 md:row-span-2 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
             <div class="p-8 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tighter">Trending
+                    <h3 class="text-lg font-black text-slate-900 dark:text-white">Produk Terlaris
                     </h3>
-                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Units Sold</p>
+                    <p class="text-xs text-slate-500 font-medium mt-1">Unit Terjual</p>
                 </div>
             </div>
             <div class="flex-1 px-8 py-6 overflow-y-auto">
@@ -187,21 +186,21 @@
                     @forelse($topProducts as $item)
                         <div class="flex items-center group">
                             <div
-                                class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:text-indigo-600 transition-colors">
+                                class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-xs font-bold text-slate-400 group-hover:text-indigo-600 transition-colors">
                                 {{ $loop->iteration }}
                             </div>
                             <div class="ml-4 flex-1">
                                 <h5 class="text-xs font-bold text-slate-900 dark:text-white truncate w-32">
                                     {{ $item->product->name }}</h5>
-                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-tighter">
-                                    {{ $item->product->sku ?? 'NO-SKU' }}</p>
+                                <p class="text-xs text-slate-400 font-medium">
+                                    {{ $item->product->sku ?? 'Tanpa SKU' }}</p>
                             </div>
                             <div class="text-right">
                                 <span class="text-xs font-black text-indigo-600">{{ $item->total_sold }}</span>
                             </div>
                         </div>
                     @empty
-                        <div class="h-40 flex items-center justify-center text-slate-400 text-xs italic">No data</div>
+                        <div class="h-40 flex items-center justify-center text-slate-400 text-xs italic">Tidak ada data</div>
                     @endforelse
                 </div>
             </div>
@@ -217,7 +216,7 @@
                             chart: {
                                 type: 'donut',
                                 height: 250,
-                                fontFamily: 'Outfit, sans-serif'
+                                fontFamily: 'Plus Jakarta Sans, sans-serif'
                             },
                             stroke: { show: false },
                             dataLabels: { enabled: false },
@@ -258,9 +257,9 @@
             }" x-init="initDonut();
             $watch('darkMode', () => setTimeout(() => initDonut(), 100))">
             <div>
-                <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tighter">Market Share
+                <h3 class="text-sm font-black text-slate-900 dark:text-white">Pangsa Pasar
                 </h3>
-                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">By Category</p>
+                <p class="text-xs text-slate-400 font-medium mt-1">Berdasarkan Kategori</p>
             </div>
 
             <div class="flex-1 flex items-center justify-center py-4">
@@ -272,8 +271,8 @@
         <div
             class="md:row-span-2 bg-slate-900 dark:bg-indigo-950 rounded-[2.5rem] p-8 text-white flex flex-col shadow-2xl">
             <div class="mb-6">
-                <h3 class="text-lg font-black tracking-tight">Activity Feed</h3>
-                <p class="text-xs text-white/50">Recent incoming orders</p>
+                <h3 class="text-lg font-black tracking-tight">Aktivitas Terkini</h3>
+                <p class="text-xs text-white/50">Transaksi penjualan terbaru</p>
             </div>
 
             <div class="flex-1 space-y-6">
@@ -289,18 +288,18 @@
                             <p class="text-lg font-black mt-1">Rp {{ number_format($tx->total_price, 0) }}</p>
                             <div class="flex items-center gap-2 mt-2">
                                 <div class="w-4 h-4 bg-white/20 rounded-full"></div>
-                                <span class="text-[10px] font-bold text-white/60">{{ $tx->user->name }}</span>
+                                <span class="text-xs font-bold text-white/60">{{ $tx->user->name }}</span>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <p class="text-xs text-white/30 italic">No recent transactions</p>
+                    <p class="text-xs text-white/30 italic">Belum ada transaksi terbaru</p>
                 @endforelse
             </div>
 
             <a href="{{ route('reports.sales') }}"
-                class="mt-8 inline-flex items-center justify-center w-full py-4 bg-white/10 hover:bg-white/20 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
-                Full Transaction History
+                class="mt-8 inline-flex items-center justify-center w-full py-4 bg-white/10 hover:bg-white/20 rounded-2xl text-xs font-bold transition-all">
+                Lihat Riwayat Transaksi Lengkap
             </a>
         </div>
 

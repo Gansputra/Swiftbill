@@ -3,6 +3,7 @@
       x-data="{ 
           darkMode: localStorage.getItem('dark-mode') === 'true',
           mobileMenu: false,
+          scrolled: false,
           toggleTheme() {
               this.darkMode = !this.darkMode;
               localStorage.setItem('dark-mode', this.darkMode);
@@ -40,16 +41,23 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
         
         <style>
-            body { font-family: 'Outfit', sans-serif; }
+            body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
             [x-cloak] { display: none !important; }
-            /* Custom scrollbar supaya sidebar tetap cantik saat menu banyak */
-            .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-            .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-            .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-            .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+            
+            /* Sembunyikan semua scrollbar jadul secara global ditiap halaman */
+            * {
+                -ms-overflow-style: none !important;  /* IE & Edge */
+                scrollbar-width: none !important;  /* Firefox */
+            }
+            *::-webkit-scrollbar {
+                display: none !important;
+                width: 0px !important;
+                height: 0px !important;
+                background: transparent !important;
+            }
 
             /* Remove number input spinners */
             input::-webkit-outer-spin-button,
@@ -59,6 +67,26 @@
             }
             input[type=number] {
                 -moz-appearance: textfield;
+            }
+
+            /* Header Title Styles - Uses existing app color palette */
+            .header-title-container > h2,
+            .header-title-container > h1,
+            .header-title-container {
+                font-size: 1.625rem; /* 26px */
+                font-weight: 700;
+                color: inherit;
+                line-height: 1.2;
+                letter-spacing: -0.025em;
+                margin: 0;
+                padding: 0;
+            }
+            @media (max-width: 640px) {
+                .header-title-container > h2,
+                .header-title-container > h1,
+                .header-title-container {
+                    font-size: 1.25rem; /* 20px */
+                }
             }
         </style>
 
@@ -106,55 +134,55 @@
                     </x-nav-link-sidebar>
                     
                     <x-nav-link-sidebar :href="route('pos.index')" :active="request()->routeIs('pos.index')" class="flex items-center gap-2">
-                        <x-heroicon-o-shopping-cart class="w-5 h-5"/> Point of Sale
+                        <x-heroicon-o-shopping-cart class="w-5 h-5"/> Kasir (POS)
                     </x-nav-link-sidebar>
 
                     <x-nav-link-sidebar :href="route('cash-management')" :active="request()->routeIs('cash-management')" class="flex items-center gap-2">
-                        <x-heroicon-o-banknotes class="w-5 h-5"/> Cash Management
+                        <x-heroicon-o-banknotes class="w-5 h-5"/> Manajemen Kas
                     </x-nav-link-sidebar>
 
                     @if(auth()->user()->role === 'admin')
                         {{-- INVENTORY SECTION --}}
-                        <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Inventory</div>
+                        <div class="pt-4 pb-2 px-3 text-xs font-semibold text-slate-400">Inventaris</div>
                         <x-nav-link-sidebar :href="route('categories.index')" :active="request()->routeIs('categories.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-tag class="w-5 h-5"/> Categories
+                            <x-heroicon-o-tag class="w-5 h-5"/> Kategori
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('suppliers.index')" :active="request()->routeIs('suppliers.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-truck class="w-5 h-5"/> Suppliers
+                            <x-heroicon-o-truck class="w-5 h-5"/> Pemasok
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('products.index')" :active="request()->routeIs('products.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-cube class="w-5 h-5"/> Products
+                            <x-heroicon-o-cube class="w-5 h-5"/> Produk
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('stock-movements.index')" :active="request()->routeIs('stock-movements.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-arrows-right-left class="w-5 h-5"/> Stock Movements
+                            <x-heroicon-o-arrows-right-left class="w-5 h-5"/> Riwayat Stok
                         </x-nav-link-sidebar>
 
                         {{-- ANALYTICS SECTION --}}
-                        <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Analytics</div>
+                        <div class="pt-4 pb-2 px-3 text-xs font-semibold text-slate-400">Analisis</div>
                         <x-nav-link-sidebar :href="route('ai-dashboard')" :active="request()->routeIs('ai-dashboard')" class="flex items-center gap-2">
-                            <x-heroicon-o-light-bulb class="w-5 h-5"/> AI Insights
+                            <x-heroicon-o-light-bulb class="w-5 h-5"/> Wawasan AI
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('reports.sales')" :active="request()->routeIs('reports.sales')" class="flex items-center gap-2">
-                            <x-heroicon-o-chart-bar class="w-5 h-5"/> Sales Report
+                            <x-heroicon-o-chart-bar class="w-5 h-5"/> Laporan Penjualan
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('reports.shifts')" :active="request()->routeIs('reports.shifts')" class="flex items-center gap-2">
-                            <x-heroicon-o-clock class="w-5 h-5"/> Shift Logs
+                            <x-heroicon-o-clock class="w-5 h-5"/> Log Shift
                         </x-nav-link-sidebar>
 
                         {{-- ADMINISTRATION SECTION --}}
-                        <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Administration</div>
+                        <div class="pt-4 pb-2 px-3 text-xs font-semibold text-slate-400">Administrasi</div>
                         <x-nav-link-sidebar :href="route('users.index')" :active="request()->routeIs('users.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-users class="w-5 h-5"/> Employees
+                            <x-heroicon-o-users class="w-5 h-5"/> Karyawan
                         </x-nav-link-sidebar>
                     @endif
                 </nav>
 
-                {{-- FOOTER SIDEBAR (TETAP SAMA) --}}
+                {{-- FOOTER SIDEBAR --}}
                 <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
                     <button @click="toggleTheme()" 
                             class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:text-indigo-600 transition-all duration-300">
                         <div class="flex items-center">
-                            <span class="text-xs font-bold uppercase tracking-wider" x-text="darkMode ? 'Light Mode' : 'Dark Mode'"></span>
+                            <span class="text-xs font-semibold" x-text="darkMode ? 'Mode Terang' : 'Mode Gelap'"></span>
                         </div>
                         <div class="flex items-center">
                             <svg x-show="darkMode" x-cloak class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,55 +212,55 @@
                     </x-nav-link-sidebar>
                     
                     <x-nav-link-sidebar :href="route('pos.index')" :active="request()->routeIs('pos.index')" class="flex items-center gap-2">
-                        <x-heroicon-o-shopping-cart class="w-5 h-5"/> Point of Sale
+                        <x-heroicon-o-shopping-cart class="w-5 h-5"/> Kasir (POS)
                     </x-nav-link-sidebar>
 
                     <x-nav-link-sidebar :href="route('cash-management')" :active="request()->routeIs('cash-management')" class="flex items-center gap-2">
-                        <x-heroicon-o-banknotes class="w-5 h-5"/> Cash Management
+                        <x-heroicon-o-banknotes class="w-5 h-5"/> Manajemen Kas
                     </x-nav-link-sidebar>
 
                     @if(auth()->user()->role === 'admin')
                         {{-- INVENTORY SECTION --}}
-                        <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Inventory</div>
+                        <div class="pt-4 pb-2 px-3 text-xs font-semibold text-slate-400">Inventaris</div>
                         <x-nav-link-sidebar :href="route('categories.index')" :active="request()->routeIs('categories.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-tag class="w-5 h-5"/> Categories
+                            <x-heroicon-o-tag class="w-5 h-5"/> Kategori
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('suppliers.index')" :active="request()->routeIs('suppliers.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-truck class="w-5 h-5"/> Suppliers
+                            <x-heroicon-o-truck class="w-5 h-5"/> Pemasok
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('products.index')" :active="request()->routeIs('products.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-cube class="w-5 h-5"/> Products
+                            <x-heroicon-o-cube class="w-5 h-5"/> Produk
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('stock-movements.index')" :active="request()->routeIs('stock-movements.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-arrows-right-left class="w-5 h-5"/> Stock Movements
+                            <x-heroicon-o-arrows-right-left class="w-5 h-5"/> Riwayat Stok
                         </x-nav-link-sidebar>
 
                         {{-- ANALYTICS SECTION --}}
-                        <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Analytics</div>
+                        <div class="pt-4 pb-2 px-3 text-xs font-semibold text-slate-400">Analisis</div>
                         <x-nav-link-sidebar :href="route('ai-dashboard')" :active="request()->routeIs('ai-dashboard')" class="flex items-center gap-2">
-                            <x-heroicon-o-light-bulb class="w-5 h-5"/> AI Insights
+                            <x-heroicon-o-light-bulb class="w-5 h-5"/> Wawasan AI
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('reports.sales')" :active="request()->routeIs('reports.sales')" class="flex items-center gap-2">
-                            <x-heroicon-o-chart-bar class="w-5 h-5"/> Sales Report
+                            <x-heroicon-o-chart-bar class="w-5 h-5"/> Laporan Penjualan
                         </x-nav-link-sidebar>
                         <x-nav-link-sidebar :href="route('reports.shifts')" :active="request()->routeIs('reports.shifts')" class="flex items-center gap-2">
-                            <x-heroicon-o-clock class="w-5 h-5"/> Shift Logs
+                            <x-heroicon-o-clock class="w-5 h-5"/> Log Shift
                         </x-nav-link-sidebar>
 
                         {{-- ADMINISTRATION SECTION --}}
-                        <div class="pt-4 pb-2 px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Administration</div>
+                        <div class="pt-4 pb-2 px-3 text-xs font-semibold text-slate-400">Administrasi</div>
                         <x-nav-link-sidebar :href="route('users.index')" :active="request()->routeIs('users.index')" class="flex items-center gap-2">
-                            <x-heroicon-o-users class="w-5 h-5"/> Employees
+                            <x-heroicon-o-users class="w-5 h-5"/> Karyawan
                         </x-nav-link-sidebar>
                     @endif
                 </nav>
 
-                {{-- FOOTER SIDEBAR (TETAP SAMA) --}}
+                {{-- FOOTER SIDEBAR --}}
                 <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
                     <button @click="toggleTheme()" 
                             class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:text-indigo-600 transition-all duration-300">
                         <div class="flex items-center">
-                            <span class="text-xs font-bold uppercase tracking-wider" x-text="darkMode ? 'Light Mode' : 'Dark Mode'"></span>
+                            <span class="text-xs font-semibold" x-text="darkMode ? 'Mode Terang' : 'Mode Gelap'"></span>
                         </div>
                         <div class="flex items-center">
                             <svg x-show="darkMode" x-cloak class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -250,22 +278,31 @@
 
             {{-- MAIN CONTENT AREA --}}
             <div class="flex-grow flex flex-col min-w-0 bg-slate-50 dark:bg-slate-900 transition-colors duration-300 relative">
-                <header class="h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 md:px-6 z-[100] sticky top-0 transition-colors duration-300 shadow-sm">
-                    <div class="flex items-center space-x-4">
-                        <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <header class="h-[76px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between px-6 md:px-8 lg:px-10 z-[100] sticky top-0 transition-all duration-300"
+                        :class="{ 'shadow-md shadow-slate-900/5 dark:shadow-black/30 border-slate-200 dark:border-slate-800': scrolled, 'shadow-sm': !scrolled }">
+                    <div class="flex items-center space-x-3 sm:space-x-4 min-w-0">
+                        <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 border border-slate-200/60 dark:border-slate-800 transition-all duration-200 flex-shrink-0">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </button>
-                        <h1 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-                            {{ $header ?? '' }}
-                        </h1>
+                        
+                        <div class="flex flex-col justify-center min-w-0">
+                            <div class="flex items-center space-x-1.5 text-xs font-medium text-slate-400 dark:text-slate-500">
+                                <span>SwiftBill</span>
+                                <svg class="w-2.5 h-2.5 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <span class="text-indigo-600 dark:text-indigo-400 font-semibold">Ringkasan</span>
+                            </div>
+                            <div class="header-title-container font-bold text-xl sm:text-2xl lg:text-[26px] text-slate-900 dark:text-white tracking-tight leading-tight truncate">
+                                {{ $header ?? '' }}
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-4 flex-shrink-0">
                         <livewire:layout.navigation />
                     </div>
                 </header>
 
-                <main class="flex-grow overflow-y-auto p-4 md:p-8 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+                <main @scroll="scrolled = ($el.scrollTop > 10)" class="flex-grow overflow-y-auto p-4 md:p-8 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
                     {{ $slot }}
                 </main>
             </div>

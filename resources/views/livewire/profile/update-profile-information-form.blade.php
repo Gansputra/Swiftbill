@@ -135,18 +135,18 @@ new class extends Component
                 this.$refs.fileInput.value = '';
                 this.isUploading = false;
             }, () => {
-                alert('Upload failed. Please try again.');
+                alert('Gagal mengunggah foto. Silakan coba lagi.');
                 this.isUploading = false;
             });
         }, 'image/jpeg');
     }
 }">
     <header>
-        <h2 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">
-            {{ __('Profile Integrity') }}
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+            Informasi Profil
         </h2>
-        <p class="mt-1 text-xs text-slate-500 font-medium tracking-wide">
-            {{ __("Manage your identity and authentication credentials.") }}
+        <p class="mt-1 text-xs text-slate-500 font-medium">
+            Kelola identitas diri dan informasi akun Anda.
         </p>
     </header>
 
@@ -170,40 +170,40 @@ new class extends Component
             </div>
 
             <div class="flex-grow space-y-3 text-center md:text-left">
-                <label class="px-6 py-3 bg-indigo-600 hover:bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest cursor-pointer transition-all inline-flex items-center gap-2 shadow-xl shadow-indigo-500/20">
+                <label class="px-6 py-3 bg-indigo-600 hover:bg-slate-900 text-white rounded-2xl text-xs font-semibold cursor-pointer transition-all inline-flex items-center gap-2 shadow-xl shadow-indigo-500/20">
                     <x-heroicon-o-arrow-up-tray class="w-4 h-4" />
-                    Update Portrait
+                    Unggah Foto
                     <input type="file" x-ref="fileInput" @change="fileSelected" class="hidden" accept="image/*" />
                 </label>
                 <div wire:loading wire:target="croppedPhoto">
-                    <p class="text-[9px] text-indigo-500 font-black uppercase animate-pulse">Synchronizing Data...</p>
+                    <p class="text-xs text-indigo-500 font-semibold animate-pulse">Sinkronisasi Data...</p>
                 </div>
-                <p x-show="!$wire.croppedPhoto" class="text-[9px] text-slate-400 font-black uppercase tracking-widest pl-2">Square Crop • High Precision</p>
+                <p x-show="!$wire.croppedPhoto" class="text-xs text-slate-400 font-medium pl-2">Foto Persegi • Presisi Tinggi</p>
                 <x-input-error class="mt-2 text-xs" :messages="$errors->get('croppedPhoto')" />
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="space-y-2">
-                <x-input-label for="name" :value="__('Display Name')" class="text-[10px] font-black uppercase tracking-widest ml-1" />
+                <x-input-label for="name" value="Nama Lengkap" class="text-xs font-semibold text-slate-600 dark:text-slate-400 ml-1" />
                 <input wire:model="name" id="name" type="text" class="w-full bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 rounded-2xl text-xs font-bold py-4 px-6 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all shadow-sm outline-none" required />
                 <x-input-error class="mt-2 text-xs" :messages="$errors->get('name')" />
             </div>
 
             <div class="space-y-2">
-                <x-input-label for="email" :value="__('Email Network')" class="text-[10px] font-black uppercase tracking-widest ml-1" />
+                <x-input-label for="email" value="Alamat Email" class="text-xs font-semibold text-slate-600 dark:text-slate-400 ml-1" />
                 <input wire:model="email" id="email" type="email" class="w-full bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 rounded-2xl text-xs font-bold py-4 px-6 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all shadow-sm outline-none" required />
                 <x-input-error class="mt-2 text-xs" :messages="$errors->get('email')" />
             </div>
         </div>
 
         <div class="flex items-center gap-4 pt-6">
-            <button type="submit" wire:loading.attr="disabled" class="px-10 py-4 bg-slate-900 dark:bg-indigo-600 text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 dark:hover:bg-white dark:hover:text-indigo-600 transition-all shadow-2xl disabled:opacity-50">
-                <span wire:loading.remove wire:target="updateProfileInformation">Synchronize Profile</span>
-                <span wire:loading wire:target="updateProfileInformation">Processing...</span>
+            <button type="submit" wire:loading.attr="disabled" class="px-10 py-4 bg-slate-900 dark:bg-indigo-600 text-white rounded-[1.5rem] text-xs font-semibold hover:bg-indigo-600 dark:hover:bg-white dark:hover:text-indigo-600 transition-all shadow-2xl disabled:opacity-50">
+                <span wire:loading.remove wire:target="updateProfileInformation">Simpan Profil</span>
+                <span wire:loading wire:target="updateProfileInformation">Memproses...</span>
             </button>
             <x-action-message class="text-xs font-bold text-emerald-500 italic" on="profile-updated">
-                {{ __('Update Propagated Successfully.') }}
+                Profil berhasil diperbarui.
             </x-action-message>
         </div>
     </form>
@@ -213,8 +213,8 @@ new class extends Component
         <div x-show="showModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100" class="relative bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-8 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tighter">Adjust Portrait</h3>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Fine-tune your identity</p>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Atur Foto Profil</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1">Sesuaikan area potong foto Anda</p>
                 </div>
                 <button @click="showModal = false" class="text-slate-400 hover:text-rose-500 transition-colors">
                     <x-heroicon-o-x-mark class="w-6 h-6" />
@@ -226,10 +226,10 @@ new class extends Component
                 </div>
             </div>
             <div class="p-8 border-t border-slate-50 dark:border-slate-800 flex items-center justify-end gap-3">
-                <button @click="showModal = false" :disabled="isUploading" class="px-8 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-all disabled:opacity-30">Cancel</button>
-                <button @click="saveCrop" :disabled="isUploading" class="px-10 py-4 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-indigo-500/30 hover:bg-slate-900 transition-all disabled:opacity-50 flex items-center gap-2">
+                <button @click="showModal = false" :disabled="isUploading" class="px-8 py-3 text-xs font-semibold text-slate-400 hover:text-slate-600 transition-all disabled:opacity-30">Batal</button>
+                <button @click="saveCrop" :disabled="isUploading" class="px-10 py-4 bg-indigo-600 text-white rounded-2xl text-xs font-semibold shadow-xl shadow-indigo-500/30 hover:bg-slate-900 transition-all disabled:opacity-50 flex items-center gap-2">
                     <span x-show="isUploading" class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    <span x-text="isUploading ? 'Transferring...' : 'Finalize & Crop'"></span>
+                    <span x-text="isUploading ? 'Mengunggah...' : 'Potong & Simpan'"></span>
                 </button>
             </div>
         </div>

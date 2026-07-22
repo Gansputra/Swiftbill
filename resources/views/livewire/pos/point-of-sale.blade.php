@@ -10,15 +10,14 @@
                         class="inline-flex items-center justify-center w-20 h-20 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-3xl mb-6 shadow-inner">
                         <x-heroicon-o-key class="w-10 h-10" />
                     </div>
-                    <h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">Shift Authorization
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Otorisasi Shift
                     </h2>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-[0.3em] font-black mt-3">Initial cash
-                        declaration required</p>
+                    <p class="text-xs text-slate-500 font-medium mt-2">Deklarasi saldo kas awal diperlukan</p>
                 </div>
 
                 @if ($hasShiftError)
                     <div
-                        class="mb-8 p-5 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center">
+                        class="mb-8 p-5 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-xs font-semibold text-center">
                         {{ $hasShiftError }}
                     </div>
                 @endif
@@ -26,8 +25,7 @@
                 <div class="space-y-8">
                     <div class="group">
                         <label
-                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 text-center">Starting
-                            Balance in Drawer</label>
+                            class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-3 text-center">Saldo Kas Awal di Laci</label>
                         <div class="relative">
                             <span
                                 class="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-black text-slate-300">Rp</span>
@@ -38,8 +36,8 @@
                     </div>
 
                     <button wire:click="openShift"
-                        class="w-full py-6 bg-indigo-600 hover:bg-slate-900 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all">
-                        Initialize Shift
+                        class="w-full py-6 bg-indigo-600 hover:bg-slate-900 text-white rounded-[2rem] font-bold text-xs shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all">
+                        Buka Shift
                     </button>
                 </div>
             </div>
@@ -54,10 +52,9 @@
                 class="bg-white dark:bg-slate-900 p-8 rounded-[3rem] shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800">
                 <div class="flex justify-between items-center mb-8">
                     <div>
-                        <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">Terminate Shift
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Tutup Shift
                         </h2>
-                        <p class="text-[10px] text-slate-400 uppercase tracking-widest font-black mt-1">Cash
-                            reconciliation</p>
+                        <p class="text-xs text-slate-500 font-medium mt-1">Rekonsiliasi Kas</p>
                     </div>
                     <button wire:click="$set('isClosingShift', false)"
                         class="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl text-slate-400 hover:text-rose-500 transition-all">
@@ -68,8 +65,7 @@
                 <div class="space-y-8">
                     <div class="bg-indigo-600 p-8 rounded-[2rem] text-white shadow-xl shadow-indigo-500/20">
                         <span
-                            class="block text-[10px] font-black uppercase tracking-[0.2em] opacity-70 mb-2 text-center">Expected
-                            Ledger Balance</span>
+                            class="block text-xs font-semibold opacity-80 mb-2 text-center">Estimasi Saldo Kas</span>
                         <span class="block text-3xl font-black text-center tracking-tighter">Rp
                             {{ number_format($this->calculateExpectedCash(), 0) }}</span>
                     </div>
@@ -77,25 +73,23 @@
                     <div class="space-y-6">
                         <div>
                             <label
-                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Actual
-                                Physical Cash</label>
+                                class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">Jumlah Kas Fisik Aktual</label>
                             <input type="number" wire:model="actualCash"
                                 class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-xl py-4 px-6 focus:ring-4 focus:ring-indigo-500/10 font-black text-slate-900 dark:text-white">
                         </div>
 
                         <div>
                             <label
-                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Observational
-                                Notes</label>
+                                class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">Catatan Tambahan</label>
                             <textarea wire:model="closingNotes"
                                 class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-xs font-bold py-4 px-6 focus:ring-4 focus:ring-indigo-500/10"
-                                rows="3" placeholder="Optional notes..."></textarea>
+                                rows="3" placeholder="Catatan opsional..."></textarea>
                         </div>
                     </div>
 
                     <button wire:click="confirmCloseShift"
-                        class="w-full py-5 bg-rose-500 hover:bg-rose-600 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-rose-500/20 active:scale-95 transition-all">
-                        Finalize & Close
+                        class="w-full py-5 bg-rose-500 hover:bg-rose-600 text-white rounded-[2rem] font-bold text-xs shadow-2xl shadow-rose-500/20 active:scale-95 transition-all">
+                        Selesaikan & Tutup Shift
                     </button>
                 </div>
             </div>
@@ -115,14 +109,14 @@
                 <div class="flex-grow relative">
                     <x-heroicon-o-magnifying-glass
                         class="w-5 h-5 absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
-                    <input type="text" wire:model.live="searchTerm" placeholder="Scan SKU or Search for products..."
+                    <input type="text" wire:model.live="searchTerm" placeholder="Pindai SKU atau cari produk..."
                         class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-[1.8rem] text-sm font-bold py-4 pl-14 pr-6 focus:ring-4 focus:ring-indigo-500/10 placeholder-slate-300 transition-all">
                 </div>
                 <div
                     class="hidden md:flex items-center gap-2 px-6 py-4 border-l border-slate-100 dark:border-slate-800">
                     <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
                     <span
-                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Cashier:
+                        class="text-xs font-semibold text-slate-600 dark:text-slate-400 whitespace-nowrap">Kasir:
                         {{ auth()->user()->name }}</span>
                 </div>
                 <button wire:click="initiateCloseShift"
@@ -144,31 +138,29 @@
                                         class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500">
                                 @else
                                     <div
-                                        class="h-full w-full flex items-center justify-center text-[10px] font-black text-slate-300 uppercase opacity-50">
-                                        SKU Void</div>
+                                        class="h-full w-full flex items-center justify-center text-xs font-semibold text-slate-300 opacity-50">
+                                        Tanpa Foto</div>
                                 @endif
 
                                 <div
                                     class="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/80 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                    <p class="text-white text-[10px] font-black uppercase tracking-widest mb-1">Add to
-                                        Cart</p>
+                                    <p class="text-white text-xs font-semibold mb-1">Tambah ke Keranjang</p>
                                     <p class="text-white text-lg font-black tracking-tighter">Rp
                                         {{ number_format($product->sell_price, 0) }}</p>
                                 </div>
                             </div>
                             <div class="mt-4 px-2">
                                 <p
-                                    class="text-xs font-black text-slate-800 dark:text-white truncate uppercase tracking-tighter">
+                                    class="text-xs font-bold text-slate-800 dark:text-white truncate">
                                     {{ $product->name }}</p>
-                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                                    {{ $product->stock }} in stock</p>
+                                <p class="text-xs font-medium text-slate-400 mt-1">
+                                    Stok: {{ $product->stock }}</p>
                             </div>
                         </div>
                     @empty
                         <div class="col-span-full py-40 flex flex-col items-center justify-center grayscale opacity-30">
                             <x-heroicon-o-cube-transparent class="w-16 h-16 text-slate-300 mb-6" />
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Empty Catalog
-                                State</p>
+                            <p class="text-xs font-medium text-slate-400">Katalog Produk Kosong</p>
                         </div>
                     @endforelse
                 </div>
@@ -188,15 +180,14 @@
                 <div
                     class="relative p-8 border-b border-slate-200/80 dark:border-white/5 flex items-center justify-between">
                     <div>
-                        <h3 class="text-lg font-black text-slate-900 dark:text-white tracking-tighter">Current Order
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">Pesanan Saat Ini
                         </h3>
                         <p
-                            class="text-[9px] font-black text-slate-500 dark:text-white/40 uppercase tracking-widest mt-1">
-                            {{ count($cart) }} line items</p>
+                            class="text-xs font-medium text-slate-500 dark:text-white/40 mt-1">
+                            {{ count($cart) }} item dipilih</p>
                     </div>
                     <button wire:click="removeFromCart('all')"
-                        class="text-[9px] font-black text-rose-500 uppercase tracking-widest hover:text-rose-700 transition">Clear
-                        all</button>
+                        class="text-xs font-semibold text-rose-500 hover:text-rose-700 transition">Hapus semua</button>
                 </div>
 
                 <div class="relative flex-grow overflow-y-auto p-6 space-y-4">
@@ -204,7 +195,7 @@
                         <div
                             class="group bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 px-6 py-5 rounded-[2rem] flex items-center gap-4 hover:bg-slate-100 dark:hover:bg-white/10 transition-all">
                             <div class="flex-grow min-w-0 font-bold text-slate-900 dark:text-white">
-                                <h4 class="text-xs truncate uppercase tracking-tighter">{{ $item['name'] }}</h4>
+                                <h4 class="text-xs font-bold truncate">{{ $item['name'] }}</h4>
                                 <p class="text-[10px] text-indigo-600 dark:text-indigo-400 mt-1">Rp
                                     {{ number_format($item['sell_price'], 0) }}</p>
                             </div>
@@ -224,8 +215,8 @@
                     @empty
                         <div class="h-full flex flex-col items-center justify-center text-center py-20 opacity-20">
                             <x-heroicon-o-shopping-bag class="w-12 h-12 text-slate-400 dark:text-white mb-4" />
-                            <p class="text-[10px] font-black text-slate-500 dark:text-white uppercase tracking-widest">
-                                Awaiting selection...</p>
+                            <p class="text-xs font-medium text-slate-500 dark:text-white">
+                                Menunggu pilihan produk...</p>
                         </div>
                     @endforelse
                 </div>
@@ -237,15 +228,14 @@
                         @if ($this->totalDiscount > 0)
                             <div class="flex justify-between items-center px-2">
                                 <span
-                                    class="text-[10px] font-black text-slate-500 dark:text-white/40 uppercase tracking-widest">Global
-                                    Savings</span>
+                                    class="text-xs font-semibold text-slate-500 dark:text-white/40">Total Diskon</span>
                                 <span class="text-sm font-black text-rose-500 tracking-tighter">- Rp
                                     {{ number_format($this->totalDiscount, 0) }}</span>
                             </div>
                         @endif
                         <div class="flex justify-between items-center px-2">
                             <span
-                                class="text-xs font-black text-slate-500 dark:text-white/60 uppercase tracking-widest">Settlement</span>
+                                class="text-xs font-semibold text-slate-500 dark:text-white/60">Total Pembayaran</span>
                             <span class="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">Rp
                                 {{ number_format($this->total, 0) }}</span>
                         </div>
@@ -256,17 +246,17 @@
                             class="grid grid-cols-2 gap-px bg-slate-200/50 dark:bg-white/10 border border-slate-200/50 dark:border-white/10 rounded-[1.8rem] overflow-hidden">
                             <div class="p-4 bg-slate-50 dark:bg-white/5">
                                 <label
-                                    class="block text-[8px] font-black text-slate-500 dark:text-white/40 uppercase tracking-widest mb-1 px-1">Instrument</label>
+                                    class="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1 px-1">Metode Bayar</label>
                                 <select wire:model.live="paymentMethod"
-                                    class="w-full bg-transparent border-none p-0 text-[10px] font-black text-indigo-600 dark:text-indigo-400 focus:ring-0 uppercase tracking-widest cursor-pointer">
-                                    <option value="cash">Cash</option>
+                                    class="w-full bg-transparent border-none p-0 text-xs font-semibold text-indigo-600 dark:text-indigo-400 focus:ring-0 cursor-pointer">
+                                    <option value="cash">Tunai</option>
                                     <option value="qris">QRIS</option>
-                                    <option value="transfer">Bank Transfer</option>
+                                    <option value="transfer">Transfer Bank</option>
                                 </select>
                             </div>
                             <div class="p-4 bg-slate-50 dark:bg-white/5">
                                 <label
-                                    class="block text-[8px] font-black text-slate-500 dark:text-white/40 uppercase tracking-widest mb-1 px-1">Received</label>
+                                    class="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1 px-1">Uang Diterima</label>
                                 <input type="number" wire:model.live="totalPaid"
                                     class="w-full bg-transparent border-none p-0 text-sm font-black text-slate-900 dark:text-white focus:ring-0 placeholder-slate-400 dark:placeholder-white/20"
                                     placeholder="0" {{ $paymentMethod !== 'cash' ? 'readonly' : '' }}>
@@ -274,7 +264,7 @@
                         </div>
 
                         @if (session()->has('error'))
-                            <div class="px-6 py-4 mb-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center animate-bounce">
+                            <div class="px-6 py-4 mb-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-xs font-semibold text-center animate-bounce">
                                 {{ session('error') }}
                             </div>
                         @endif
@@ -282,21 +272,21 @@
                         <div
                             class="flex items-center justify-between px-6 py-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-200/50 dark:border-white/10">
                             <span
-                                class="text-[9px] font-black text-slate-500 dark:text-white/40 uppercase tracking-widest">Change</span>
+                                class="text-xs font-semibold text-slate-500 dark:text-white/40">Kembalian</span>
                             <span
                                 class="text-lg font-black {{ $this->change >= 0 ? 'text-emerald-400' : 'text-rose-500 animate-pulse' }}">Rp
                                 {{ number_format($this->change, 0) }}</span>
                         </div>
 
                         <button wire:click="checkout" wire:loading.attr="disabled"
-                            class="group relative w-full py-6 bg-indigo-600 hover:bg-white text-white hover:text-indigo-950 disabled:opacity-50 disabled:cursor-not-allowed rounded-[2rem] font-black text-[11px] uppercase tracking-[0.4em] shadow-2xl shadow-indigo-600/30 active:scale-95 transition-all duration-500 overflow-hidden">
+                            class="group relative w-full py-6 bg-indigo-600 hover:bg-white text-white hover:text-indigo-950 disabled:opacity-50 disabled:cursor-not-allowed rounded-[2rem] font-bold text-xs shadow-2xl shadow-indigo-600/30 active:scale-95 transition-all duration-500 overflow-hidden">
                             <span class="relative z-10 flex items-center justify-center gap-3" wire:loading.remove wire:target="checkout">
-                                {{ $snapToken ? 'RESUME PAYMENT' : 'PAY' }}
+                                {{ $snapToken ? 'Lanjutkan Pembayaran' : 'Bayar Sekarang' }}
                                 <x-heroicon-o-arrow-right-circle
                                     class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </span>
                             <span class="relative z-10 flex items-center justify-center gap-3 animate-pulse" wire:loading wire:target="checkout">
-                                Processing...
+                                Memproses...
                             </span>
                         </button>
                     </div>
