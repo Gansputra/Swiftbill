@@ -41,5 +41,24 @@
     </head>
     <body class="antialiased">
         {{ $slot }}
+
+        <!-- Re-initialize Cloudflare Turnstile on Livewire SPA navigation -->
+        <script>
+            document.addEventListener('livewire:navigated', () => {
+                if (typeof turnstile !== 'undefined') {
+                    // Cari semua elemen cf-turnstile di halaman baru yang belum ter-render
+                    const elements = document.querySelectorAll('.cf-turnstile');
+                    elements.forEach((el) => {
+                        // Bersihkan konten di dalam element untuk menghindari double render jika ada cache
+                        el.innerHTML = '';
+                        // Render ulang widget turnstile secara manual
+                        turnstile.render(el, {
+                            sitekey: el.getAttribute('data-sitekey'),
+                            theme: el.getAttribute('data-theme') || 'dark'
+                        });
+                    });
+                }
+            });
+        </script>
     </body>
 </html>
