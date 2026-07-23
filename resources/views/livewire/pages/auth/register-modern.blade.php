@@ -25,19 +25,21 @@ new #[Layout('layouts.auth-split')] class extends Component {
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // Validate Cloudflare Turnstile
-        $turnstileResponse = request()->input('cf-turnstile-response');
-        $secretKey = env('TURNSTILE_SECRET_KEY', '1x0000000000000000000000000000000AA'); // Default dummy secret for testing
-        
-        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'secret' => $secretKey,
-            'response' => $turnstileResponse,
-            'remoteip' => request()->ip(),
-        ]);
+        // Validate Cloudflare Turnstile (Bypass on local/testing environment)
+        if (app()->environment('production')) {
+            $turnstileResponse = request()->input('cf-turnstile-response');
+            $secretKey = env('TURNSTILE_SECRET_KEY');
+            
+            $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+                'secret' => $secretKey,
+                'response' => $turnstileResponse,
+                'remoteip' => request()->ip(),
+            ]);
 
-        if (!$response->json('success')) {
-            $this->addError('turnstile', 'Validasi keamanan "Saya bukan robot" gagal. Silakan coba kembali.');
-            return;
+            if (!$response->json('success')) {
+                $this->addError('turnstile', 'Validasi keamanan "Saya bukan robot" gagal. Silakan coba kembali.');
+                return;
+            }
         }
 
         $validated['password'] = Hash::make($validated['password']);
