@@ -88,26 +88,41 @@ class AiDashboard extends Component
         ]);
         $this->chatMessages[] = ['role' => 'user', 'content' => $prompt, 'time' => $userMsg->created_at->format('d M Y, H:i')];
 
-        // 1. Context injection — rich products data (with 7-day sales and min_stock levels)
+        // 1. Context injection — rich products data (with 7-day sales, min_stock, buy_price, category, supplier)
         $products = Product::leftJoin('transaction_items', 'products.id', '=', 'transaction_items.product_id')
             ->leftJoin('transactions', function ($join) {
                 $join->on('transaction_items.transaction_id', '=', 'transactions.id')
                     ->where('transactions.created_at', '>=', now()->subDays(7));
             })
+            ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+            ->leftJoin('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->select(
                 'products.name',
                 'products.stock',
                 'products.min_stock',
+                'products.buy_price',
                 'products.sell_price',
+                'categories.name as category',
+                'suppliers.name as supplier',
                 DB::raw('COALESCE(SUM(CASE WHEN transactions.id IS NOT NULL THEN transaction_items.quantity ELSE 0 END), 0) as sold_last_7_days')
             )
-            ->groupBy('products.id', 'products.name', 'products.stock', 'products.min_stock', 'products.sell_price')
+            ->groupBy('products.id', 'products.name', 'products.stock', 'products.min_stock', 'products.buy_price', 'products.sell_price', 'categories.name', 'suppliers.name')
             ->orderBy(DB::raw('products.stock * products.sell_price'), 'desc')
             ->limit(50)
             ->get()
             ->toArray();
 
         $todaySales = Transaction::whereDate('created_at', today())->sum('total_price');
+        $todayTransactionCount = Transaction::whereDate('created_at', today())->count();
+
+        // Today's discount total
+        $todayDiscount = Transaction::whereDate('created_at', today())->sum('total_discount');
+
+        // Today's profit (COGS-based)
+        $todayCogs = \App\Models\TransactionItem::whereHas('transaction', function ($q) {
+                $q->whereDate('created_at', today());
+            })->sum(DB::raw('cogs * quantity'));
+        $todayProfit = $todaySales - $todayCogs - $todayDiscount;
 
         // Top selling products (last 30 days)
         $topSelling = \App\Models\TransactionItem::select('product_id', \DB::raw('SUM(quantity) as total_sold'))
@@ -132,25 +147,117 @@ class AiDashboard extends Component
         $total30DayRevenue = Transaction::where('created_at', '>=', now()->subDays($daysRange - 1)->startOfDay())->sum('total_price');
         $avgRevenue = $total30DayRevenue / $daysRange;
 
+        // Payment method distribution (last 30 days)
+        $paymentMethods = Transaction::where('created_at', '>=', now()->subDays(30))
+            ->select('payment_method', DB::raw('COUNT(*) as count'), DB::raw('SUM(total_price) as total'))
+            ->groupBy('payment_method')
+            ->get()
+            ->toArray();
+
+        // Daily revenue trend (last 7 days)
+        $dailyTrend = Transaction::where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total_price) as revenue'), DB::raw('COUNT(*) as transactions'))
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date')
+            ->get()
+            ->toArray();
+
+        // Category performance (last 30 days)
+        $categoryPerformance = \App\Models\TransactionItem::whereHas('transaction', function ($q) {
+                $q->where('created_at', '>=', now()->subDays(30));
+            })
+            ->join('products', 'transaction_items.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->select(
+                'categories.name as category',
+                DB::raw('SUM(transaction_items.quantity) as total_sold'),
+                DB::raw('SUM(transaction_items.subtotal) as total_revenue'),
+                DB::raw('SUM(transaction_items.cogs * transaction_items.quantity) as total_cogs')
+            )
+            ->groupBy('categories.name')
+            ->orderByDesc('total_revenue')
+            ->get()
+            ->map(fn($c) => [
+                'category' => $c->category,
+                'total_sold' => $c->total_sold,
+                'revenue' => $c->total_revenue,
+                'profit' => $c->total_revenue - $c->total_cogs
+            ])
+            ->toArray();
+
+        // Current cash shift status
+        $currentShift = \App\Models\CashShift::where('user_id', $userId)
+            ->latest()
+            ->first();
+        $shiftInfo = $currentShift ? [
+            'status' => $currentShift->status,
+            'starting_cash' => $currentShift->starting_cash,
+            'expected_ending_cash' => $currentShift->expected_ending_cash,
+            'actual_ending_cash' => $currentShift->actual_ending_cash,
+            'opened_at' => $currentShift->created_at->format('d M Y, H:i'),
+            'closed_at' => $currentShift->closed_at ? $currentShift->closed_at->format('d M Y, H:i') : null,
+        ] : null;
+
+        // Cash in/out summary today
+        $cashInOut = \App\Models\CashTransaction::whereHas('shift', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->whereDate('created_at', today())
+            ->select('type', DB::raw('SUM(amount) as total'), DB::raw('COUNT(*) as count'))
+            ->groupBy('type')
+            ->get()
+            ->toArray();
+
+        // Supplier summary
+        $supplierSummary = \App\Models\Supplier::withCount('products')
+            ->orderByDesc('products_count')
+            ->limit(10)
+            ->get()
+            ->map(fn($s) => ['name' => $s->name, 'total_products' => $s->products_count])
+            ->toArray();
+
+        // Total products and low stock count
+        $totalProducts = Product::count();
+        $lowStockCount = Product::whereColumn('stock', '<=', 'min_stock')->count();
+        $outOfStockCount = Product::where('stock', 0)->count();
+
         $fullPrompt = "You are an AI assistant for a Point of Sale system named Swiftbill. 
 Answer concisely and cleanly. Use Markdown formatting. Always reply in the same language as the user (Indonesian if they ask in Indonesian, English if in English).
 
 Context about the current database:
+- Today's Date: " . now()->format('d M Y (l)') . "
 - Today's Sales Revenue: Rp. " . number_format($todaySales, 0, ',', '.') . "
+- Today's Transaction Count: {$todayTransactionCount} transactions
+- Today's Total Discount Given: Rp. " . number_format($todayDiscount, 0, ',', '.') . "
+- Today's Estimated Profit (Revenue - COGS - Discount): Rp. " . number_format($todayProfit, 0, ',', '.') . "
 - Average Daily Revenue (over the last {$daysRange} days since store start): Rp. " . number_format($avgRevenue, 0, ',', '.') . "
+- Total Products in Inventory: {$totalProducts}
+- Low Stock Products (stock <= min_stock): {$lowStockCount}
+- Out of Stock Products (stock = 0): {$outOfStockCount}
 - Top Selling Products (last 30 days, by quantity): " . json_encode($topSelling) . "
-- Current Stock Levels (includes name, stock, min_stock, sell_price, and units sold in the last 7 days): " . json_encode($products) . "
+- Payment Method Distribution (last 30 days): " . json_encode($paymentMethods) . "
+- Daily Revenue Trend (last 7 days): " . json_encode($dailyTrend) . "
+- Category Performance (last 30 days, includes revenue & profit): " . json_encode($categoryPerformance) . "
+- Current Stock Levels (includes name, stock, min_stock, buy_price, sell_price, category, supplier, sold_last_7_days): " . json_encode($products) . "
+- Current Cash Shift Info: " . json_encode($shiftInfo) . "
+- Today's Cash In/Out Transactions: " . json_encode($cashInOut) . "
+- Supplier Summary: " . json_encode($supplierSummary) . "
 
-Guidelines for answering stock sufficiency:
+Guidelines for answering:
 - For questions about whether stock is sufficient for next week, compare 'stock' with 'sold_last_7_days'.
 - If the current 'stock' of a product is less than 'sold_last_7_days', warn the user that the stock is INSUFFICIENT for next week.
 - If 'stock' is close to or below 'min_stock', suggest restocking it.
 - Estimate how many days the remaining stock will last based on the weekly sales rate ('sold_last_7_days').
+- For profit analysis, use (sell_price - buy_price) as margin per unit, or use COGS data for historical accuracy.
+- For payment trends, analyze the distribution of cash vs QRIS vs transfer.
+- For daily trend analysis, compare today's revenue with the 7-day trend to identify growth or decline.
+- For category analysis, identify the most profitable and most sold categories.
 
 User's Question: " . $prompt;
 
-        // Dispatch AI response job asynchronously
-        ProcessAiResponse::dispatch($fullPrompt, $userId);
+        // Dispatch AI response job asynchronously with user's customized API Key (if set)
+        $userApiKey = auth()->user()->gemini_api_key;
+        ProcessAiResponse::dispatch($fullPrompt, $userId, $userApiKey);
 
         $this->isWaiting = true;
     }

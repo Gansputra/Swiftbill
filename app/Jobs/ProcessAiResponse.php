@@ -13,14 +13,16 @@ class ProcessAiResponse implements ShouldQueue
 
     protected $prompt;
     protected $userId;
+    protected $apiKey;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($prompt, $userId)
+    public function __construct($prompt, $userId, ?string $apiKey = null)
     {
         $this->prompt = $prompt;
         $this->userId = $userId;
+        $this->apiKey = $apiKey;
     }
 
     /**
@@ -28,7 +30,7 @@ class ProcessAiResponse implements ShouldQueue
      */
     public function handle(): void
     {
-        $aiService = new GeminiAiService();
+        $aiService = new GeminiAiService($this->apiKey);
         $response = $aiService->generateContent($this->prompt);
 
         // Save AI response
@@ -39,3 +41,4 @@ class ProcessAiResponse implements ShouldQueue
         ]);
     }
 }
+

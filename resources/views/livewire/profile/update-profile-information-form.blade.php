@@ -13,6 +13,7 @@ new class extends Component
 
     public string $name = '';
     public string $email = '';
+    public string $gemini_api_key = '';
     public $photo; 
     public $croppedPhoto; 
     public $currentPhoto = ''; 
@@ -25,6 +26,7 @@ new class extends Component
         $user = Auth::user();
         $this->name = $user->name;
         $this->email = $user->email;
+        $this->gemini_api_key = $user->gemini_api_key ?? '';
         $this->currentPhoto = $user->profile_photo_path;
     }
 
@@ -38,6 +40,7 @@ new class extends Component
         $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'gemini_api_key' => ['nullable', 'string'],
         ]);
 
         // Proteksi tambahan: hanya validasi jika croppedPhoto benar-benar ada objeknya
@@ -58,6 +61,7 @@ new class extends Component
 
         $user->name = $this->name;
         $user->email = $this->email;
+        $user->gemini_api_key = $this->gemini_api_key;
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
@@ -194,6 +198,23 @@ new class extends Component
                 <x-input-label for="email" value="Alamat Email" class="text-xs font-semibold text-slate-600 dark:text-slate-400 ml-1" />
                 <input wire:model="email" id="email" type="email" class="w-full bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 rounded-2xl text-xs font-bold py-4 px-6 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all shadow-sm outline-none" required />
                 <x-input-error class="mt-2 text-xs" :messages="$errors->get('email')" />
+            </div>
+
+            <div class="space-y-2 md:col-span-2">
+                <x-input-label for="gemini_api_key" value="Gemini API Key" class="text-xs font-semibold text-slate-600 dark:text-slate-400 ml-1" />
+                <div class="relative" x-data="{ show: false }">
+                    <input wire:model="gemini_api_key" id="gemini_api_key" :type="show ? 'text' : 'password'" placeholder="Masukkan Gemini API Key Anda" class="w-full bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 rounded-2xl text-xs font-bold py-4 pl-6 pr-12 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all shadow-sm outline-none" />
+                    <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors">
+                        <template x-if="show">
+                            <x-heroicon-o-eye-slash class="w-5 h-5" />
+                        </template>
+                        <template x-if="!show">
+                            <x-heroicon-o-eye class="w-5 h-5" />
+                        </template>
+                    </button>
+                </div>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500 ml-1">Kunci ini akan dienkripsi dengan aman di database. Setiap user wajib memiliki API Key sendiri untuk menggunakan asisten AI.</p>
+                <x-input-error class="mt-2 text-xs" :messages="$errors->get('gemini_api_key')" />
             </div>
         </div>
 

@@ -21,6 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role',
+        'gemini_api_key',
     ];
 
     /**
@@ -31,6 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'gemini_api_key',
     ];
 
     /**
@@ -43,6 +45,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'gemini_api_key' => 'encrypted',
         ];
     }
 

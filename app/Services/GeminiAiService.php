@@ -10,9 +10,9 @@ class GeminiAiService
     protected $apiKey;
     protected $apiUrl;
 
-    public function __construct()
+    public function __construct(?string $apiKey = null)
     {
-        $this->apiKey = env('GEMINI_API_KEY');
+        $this->apiKey = $apiKey ?: env('GEMINI_API_KEY');
         $this->apiUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent';
     }
 
@@ -22,7 +22,7 @@ class GeminiAiService
     public function generateContent($prompt)
     {
         if (empty($this->apiKey)) {
-            return "Error: Gemini API Key is not set in .env";
+            return "Error: Gemini API Key belum diatur. Silakan atur API Key Gemini Anda terlebih dahulu di menu Profil.";
         }
 
         $maxRetries = 3;
