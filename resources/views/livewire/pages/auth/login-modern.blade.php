@@ -15,6 +15,21 @@ new #[Layout('layouts.auth-split')] class extends Component {
     {
         $this->validate();
 
+        // Validate Cloudflare Turnstile
+        $turnstileResponse = request()->input('cf-turnstile-response');
+        $secretKey = env('TURNSTILE_SECRET_KEY', '1x0000000000000000000000000000000AA'); // Default dummy secret for testing
+        
+        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+            'secret' => $secretKey,
+            'response' => $turnstileResponse,
+            'remoteip' => request()->ip(),
+        ]);
+
+        if (!$response->json('success')) {
+            $this->addError('turnstile', 'Validasi keamanan "Saya bukan robot" gagal. Silakan coba kembali.');
+            return;
+        }
+
         $this->form->authenticate();
 
         Session::regenerate();
@@ -446,6 +461,12 @@ new #[Layout('layouts.auth-split')] class extends Component {
                         </label>
                         <a href="{{ route('password.request') }}" class="forgot-link">Forgot password?</a>
                     </div>
+
+                    <!-- Cloudflare Turnstile Widget -->
+                    <div class="form-group flex justify-center py-2" wire:ignore>
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAD7nEyLFGqUrBZ5y" data-theme="dark"></div>
+                    </div>
+                    @error('turnstile') <span class="error-msg text-center block mb-4">{{ $message }}</span> @enderror
 
                     <button type="submit" class="login-btn">
                         <span>Log in</span>
