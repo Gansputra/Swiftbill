@@ -121,7 +121,6 @@ class PointOfSale extends Component
                         ->orWhere('sku', 'like', '%' . $this->searchTerm . '%');
                 })
                 ->latest()
-                ->take(8)
                 ->get();
         }
 
