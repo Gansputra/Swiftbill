@@ -1,8 +1,8 @@
-<div class="min-h-full lg:h-full relative overflow-x-hidden">
+<div class="h-full relative">
     @if (!$currentShift)
         <!-- Open Shift Overlay - Bento Style -->
         <div
-            class="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl p-4 overflow-y-auto">
+            class="absolute inset-0 z-30 flex items-center justify-center bg-slate-50/70 dark:bg-slate-950/70 backdrop-blur-xl p-4 overflow-y-auto rounded-[3rem]">
             <div
                 class="bg-white dark:bg-slate-900 p-6 sm:p-10 rounded-[2.5rem] sm:rounded-[3rem] shadow-2xl max-w-md w-full border border-white dark:border-slate-800 my-auto">
                 <div class="text-center mb-8 sm:mb-10">
@@ -47,7 +47,7 @@
     @if ($isClosingShift)
         <!-- Close Shift Modal - Bento Style -->
         <div
-            class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4 overflow-y-auto">
+            class="absolute inset-0 z-30 flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4 overflow-y-auto rounded-[3rem]">
             <div
                 class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] sm:rounded-[3rem] shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 my-auto">
                 <div class="flex justify-between items-center mb-6 sm:mb-8">
@@ -98,7 +98,7 @@
 
     <!-- Main Bento POS Layout -->
     <div
-        class="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-full lg:h-full p-2 {{ !$currentShift || $isClosingShift ? 'opacity-10 pointer-events-none blur-xl' : '' }} transition-all duration-700">
+        class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full p-2 {{ !$currentShift || $isClosingShift ? 'opacity-10 pointer-events-none blur-xl' : '' }} transition-all duration-700">
 
         <!-- Column Left: Catalog (8/12) -->
         <div class="lg:col-span-8 flex flex-col gap-6 lg:overflow-hidden">
