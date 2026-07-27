@@ -17,6 +17,7 @@ class PointOfSale extends Component
     public $paymentMethod = 'cash';
     public $customerName = 'Guest';
     public $snapToken = null; // Store pending Midtrans token
+    public $pendingOrderId = null; // For auto-polling payment status
 
     public $hasShiftError = '';
 
@@ -37,6 +38,7 @@ class PointOfSale extends Component
         $this->cart = session()->get('pos_cart_' . auth()->id(), []);
         $this->snapToken = session()->get('pos_snap_token_' . auth()->id(), null);
         $this->customerName = session()->get('pos_customer_' . auth()->id(), 'Guest');
+        $this->pendingOrderId = session()->get('pos_pending_order_' . auth()->id(), null);
         
         $this->calculateTotal();
     }
@@ -258,6 +260,8 @@ class PointOfSale extends Component
         \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
 
         $orderId = 'SB-' . time() . '-' . auth()->id();
+        $this->pendingOrderId = $orderId;
+        session()->put('pos_pending_order_' . auth()->id(), $orderId);
 
         $items = collect($this->cart)->map(fn($item) => [
             'id' => $item['product_id'],
@@ -296,8 +300,43 @@ class PointOfSale extends Component
         }
     }
 
+    /**
+     * Auto-polling: dipanggil setiap 4 detik via wire:poll saat ada transaksi pending.
+     * Cek status ke Midtrans API — jika sudah settlement/capture, langsung finalisasi.
+     */
+    public function checkPendingPayment(TransactionService $transactionService)
+    {
+        if (!$this->pendingOrderId) return;
+
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('midtrans.is_production');
+
+        try {
+            $status = \Midtrans\Transaction::status($this->pendingOrderId);
+            $txStatus = $status->transaction_status ?? null;
+
+            if (in_array($txStatus, ['capture', 'settlement'])) {
+                // Pembayaran dikonfirmasi oleh Midtrans — finalisasi otomatis!
+                $this->pendingOrderId = null;
+                session()->forget('pos_pending_order_' . auth()->id());
+                $this->processFinalCheckout($transactionService);
+            } elseif (in_array($txStatus, ['cancel', 'deny', 'expire'])) {
+                // Transaksi dibatalkan/expired — reset token
+                $this->pendingOrderId = null;
+                $this->snapToken = null;
+                session()->forget('pos_pending_order_' . auth()->id());
+                session()->forget('pos_snap_token_' . auth()->id());
+                session()->flash('error', 'Pembayaran dibatalkan atau kedaluwarsa.');
+            }
+        } catch (\Exception $e) {
+            // Order mungkin belum ada di Midtrans — lanjutkan polling diam-diam
+        }
+    }
+
     public function finalizeTransaction(TransactionService $transactionService, $midtransResult = null)
     {
+        $this->pendingOrderId = null;
+        session()->forget('pos_pending_order_' . auth()->id());
         $this->processFinalCheckout($transactionService);
     }
 
@@ -320,11 +359,13 @@ class PointOfSale extends Component
         $this->change = 0;
         $this->totalDiscount = 0;
         $this->customerName = 'Guest';
-        $this->snapToken = null; // Clear token on success
+        $this->snapToken = null;
+        $this->pendingOrderId = null;
 
         // Final Session Cleanup
         session()->forget('pos_cart_' . auth()->id());
         session()->forget('pos_snap_token_' . auth()->id());
+        session()->forget('pos_pending_order_' . auth()->id());
         session()->forget('pos_customer_' . auth()->id());
 
         $this->redirect(route('pos.receipt', $invoiceNumber), navigate: false);

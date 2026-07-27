@@ -96,6 +96,15 @@
         </div>
     @endif
 
+    {{-- Auto-polling: cek status pembayaran Midtrans setiap 4 detik saat ada transaksi pending --}}
+    @if ($pendingOrderId)
+        <div wire:poll.4000ms="checkPendingPayment" class="hidden"></div>
+        <div class="absolute top-4 right-4 z-20 flex items-center gap-2 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-xs font-semibold px-4 py-2 rounded-2xl shadow-sm animate-pulse">
+            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+            Menunggu konfirmasi pembayaran...
+        </div>
+    @endif
+
     <!-- Main Bento POS Layout -->
     <div
         class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full p-2 {{ !$currentShift || $isClosingShift ? 'opacity-10 pointer-events-none blur-xl' : '' }} transition-all duration-700">
