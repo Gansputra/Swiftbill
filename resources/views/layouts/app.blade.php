@@ -118,10 +118,10 @@
 
         <div class="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950">
             {{-- MOBILE OVERLAY --}}
-            <div x-show="mobileMenu" @click="closeMobileMenu()" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden" x-cloak></div>
+            <div x-show="mobileMenu" @click="closeMobileMenu()" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-[190] bg-black/60 backdrop-blur-xs md:hidden" x-cloak></div>
             
             {{-- MOBILE SIDEBAR --}}
-            <aside x-show="mobileMenu" x-transition:enter="transition-transform ease-in-out duration-300" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition-transform ease-in-out duration-300" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="fixed z-50 flex flex-col w-64 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-sm md:hidden" x-cloak>
+            <aside x-show="mobileMenu" x-transition:enter="transition-transform ease-in-out duration-300" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition-transform ease-in-out duration-300" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="fixed inset-y-0 left-0 z-[200] flex flex-col w-72 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-2xl md:hidden" x-cloak>
                 <div class="p-6 flex items-center space-x-3">
                     <div class="h-8 w-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">S</div>
                     <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">SwiftBill</span>

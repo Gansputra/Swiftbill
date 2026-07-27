@@ -1,28 +1,28 @@
-<div class="h-full relative overflow-hidden">
+<div class="min-h-full lg:h-full relative overflow-x-hidden">
     @if (!$currentShift)
         <!-- Open Shift Overlay - Bento Style -->
         <div
-            class="absolute inset-0 z-50 flex items-center justify-center bg-slate-50/60 dark:bg-slate-950/60 backdrop-blur-xl rounded-[3rem]">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl p-4 overflow-y-auto">
             <div
-                class="bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-2xl max-w-md w-full border border-white dark:border-slate-800">
-                <div class="text-center mb-10">
+                class="bg-white dark:bg-slate-900 p-6 sm:p-10 rounded-[2.5rem] sm:rounded-[3rem] shadow-2xl max-w-md w-full border border-white dark:border-slate-800 my-auto">
+                <div class="text-center mb-8 sm:mb-10">
                     <div
-                        class="inline-flex items-center justify-center w-20 h-20 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-3xl mb-6 shadow-inner">
-                        <x-heroicon-o-key class="w-10 h-10" />
+                        class="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-3xl mb-4 sm:mb-6 shadow-inner">
+                        <x-heroicon-o-key class="w-8 h-8 sm:w-10 sm:h-10" />
                     </div>
-                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Otorisasi Shift
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Otorisasi Shift
                     </h2>
                     <p class="text-xs text-slate-500 font-medium mt-2">Deklarasi saldo kas awal diperlukan</p>
                 </div>
 
                 @if ($hasShiftError)
                     <div
-                        class="mb-8 p-5 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-xs font-semibold text-center">
+                        class="mb-6 p-4 sm:p-5 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-xs font-semibold text-center">
                         {{ $hasShiftError }}
                     </div>
                 @endif
 
-                <div class="space-y-8">
+                <div class="space-y-6 sm:space-y-8">
                     <div class="group">
                         <label
                             class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-3 text-center">Saldo Kas Awal di Laci</label>
@@ -30,13 +30,13 @@
                             <span
                                 class="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-black text-slate-300">Rp</span>
                             <input type="number" wire:model="startingCash"
-                                class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-[2rem] text-3xl py-6 pl-16 pr-8 text-center focus:ring-4 focus:ring-indigo-500/10 font-black text-slate-900 dark:text-white"
+                                class="block w-full bg-slate-50 dark:bg-slate-800 border-none rounded-[2rem] text-2xl sm:text-3xl py-5 sm:py-6 pl-16 pr-8 text-center focus:ring-4 focus:ring-indigo-500/10 font-black text-slate-900 dark:text-white"
                                 placeholder="0">
                         </div>
                     </div>
 
                     <button wire:click="openShift"
-                        class="w-full py-6 bg-indigo-600 hover:bg-slate-900 text-white rounded-[2rem] font-bold text-xs shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all">
+                        class="w-full py-5 sm:py-6 bg-indigo-600 hover:bg-slate-900 text-white rounded-[2rem] font-bold text-xs shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all">
                         Buka Shift
                     </button>
                 </div>
@@ -47,12 +47,12 @@
     @if ($isClosingShift)
         <!-- Close Shift Modal - Bento Style -->
         <div
-            class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md rounded-[3rem] p-4">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4 overflow-y-auto">
             <div
-                class="bg-white dark:bg-slate-900 p-8 rounded-[3rem] shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800">
-                <div class="flex justify-between items-center mb-8">
+                class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] sm:rounded-[3rem] shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 my-auto">
+                <div class="flex justify-between items-center mb-6 sm:mb-8">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Tutup Shift
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Tutup Shift
                         </h2>
                         <p class="text-xs text-slate-500 font-medium mt-1">Rekonsiliasi Kas</p>
                     </div>
@@ -62,15 +62,15 @@
                     </button>
                 </div>
 
-                <div class="space-y-8">
-                    <div class="bg-indigo-600 p-8 rounded-[2rem] text-white shadow-xl shadow-indigo-500/20">
+                <div class="space-y-6 sm:space-y-8">
+                    <div class="bg-indigo-600 p-6 sm:p-8 rounded-[2rem] text-white shadow-xl shadow-indigo-500/20">
                         <span
                             class="block text-xs font-semibold opacity-80 mb-2 text-center">Estimasi Saldo Kas</span>
-                        <span class="block text-3xl font-black text-center tracking-tighter">Rp
+                        <span class="block text-2xl sm:text-3xl font-black text-center tracking-tighter">Rp
                             {{ number_format($this->calculateExpectedCash(), 0) }}</span>
                     </div>
 
-                    <div class="space-y-6">
+                    <div class="space-y-4 sm:space-y-6">
                         <div>
                             <label
                                 class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-2">Jumlah Kas Fisik Aktual</label>
@@ -98,10 +98,10 @@
 
     <!-- Main Bento POS Layout -->
     <div
-        class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full p-2 {{ !$currentShift || $isClosingShift ? 'opacity-10 pointer-events-none blur-xl' : '' }} transition-all duration-700">
+        class="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-full lg:h-full p-2 {{ !$currentShift || $isClosingShift ? 'opacity-10 pointer-events-none blur-xl' : '' }} transition-all duration-700">
 
         <!-- Column Left: Catalog (8/12) -->
-        <div class="lg:col-span-8 flex flex-col gap-6 overflow-hidden">
+        <div class="lg:col-span-8 flex flex-col gap-6 lg:overflow-hidden">
 
             <!-- Box 1: Search & Filter Bento -->
             <div
@@ -171,7 +171,7 @@
         </div>
 
         <!-- Column Right: Checkout (4/12) - Bento Box Taller -->
-        <div class="lg:col-span-4 flex flex-col gap-6 overflow-hidden">
+        <div class="lg:col-span-4 flex flex-col gap-6 lg:overflow-hidden">
 
             <!-- Box 3: Cart Feed Bento -->
             <div
