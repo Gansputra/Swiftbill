@@ -38,3 +38,7 @@ Route::get('/stock-movements', function () {
 Route::get('/ai-chats', function () {
     return response()->json(\App\Models\AiChatMessage::all());
 });
+
+// Midtrans Payment Gateway Webhook / Notification Callback
+Route::post('/midtrans/notification', [\App\Http\Controllers\Api\MidtransWebhookController::class, 'handle']);
+Route::post('/midtrans/webhook', [\App\Http\Controllers\Api\MidtransWebhookController::class, 'handle']);
